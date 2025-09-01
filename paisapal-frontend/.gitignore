@@ -3,6 +3,9 @@ logs
 *.log
 
 .env
+.env.local
+.env.development
+.env.production
 
 npm-debug.log*
 yarn-debug.log*
