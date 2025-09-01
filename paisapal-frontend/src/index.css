@@ -1,0 +1,195 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Custom Properties for theming */
+:root {
+  --primary-50: 240 249 255;
+  --primary-500: 14 165 233;
+  --primary-600: 2 132 199;
+  --primary-700: 3 105 161;
+  --primary-900: 12 74 110;
+  
+  --gray-50: 249 250 251;
+  --gray-100: 243 244 246;
+  --gray-800: 31 41 55;
+  --gray-900: 17 24 39;
+  
+  --success-500: 34 197 94;
+  --error-500: 239 68 68;
+  --warning-500: 245 158 11;
+}
+
+/* ...rest of the code remains unchanged... */
+
+.dark {
+  --gray-50: 17 24 39;
+  --gray-100: 31 41 55;
+  --gray-800: 243 244 246;
+  --gray-900: 249 250 251;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom utility classes */
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgb(var(--gray-100));
+    border-radius: 9999px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(var(--gray-300));
+    border-radius: 9999px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--gray-400));
+  }
+  
+  .dark .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgb(var(--gray-800));
+  }
+  
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(var(--gray-600));
+  }
+  
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--gray-500));
+  }
+}
+
+/* Component styles */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-md transition-colors;
+    background: rgb(var(--primary-600));
+  }
+  
+  .btn-primary:hover {
+    background: rgb(var(--primary-700));
+  }
+  
+  .btn-primary:focus {
+    outline: 2px solid rgb(var(--primary-500));
+    outline-offset: 2px;
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium border rounded-md transition-colors;
+    background: rgb(var(--gray-50));
+    border-color: rgb(var(--gray-300));
+    color: rgb(var(--gray-700));
+  }
+  
+  .btn-secondary:hover {
+    background: rgb(var(--gray-100));
+  }
+  
+  .dark .btn-secondary {
+    background: rgb(var(--gray-800));
+    border-color: rgb(var(--gray-600));
+    color: rgb(var(--gray-300));
+  }
+  
+  .dark .btn-secondary:hover {
+    background: rgb(var(--gray-700));
+  }
+  
+  .form-input {
+    @apply block w-full px-3 py-2 border rounded-md shadow-sm transition-colors;
+    background: rgb(var(--gray-50));
+    border-color: rgb(var(--gray-300));
+    color: rgb(var(--gray-900));
+  }
+  
+  .form-input:focus {
+    outline: 2px solid rgb(var(--primary-500));
+    outline-offset: -2px;
+    border-color: rgb(var(--primary-500));
+  }
+  
+  .dark .form-input {
+    background: rgb(var(--gray-800));
+    border-color: rgb(var(--gray-600));
+    color: rgb(var(--gray-100));
+  }
+  
+  .card {
+    @apply rounded-lg shadow-sm border;
+    background: rgb(var(--gray-50));
+    border-color: rgb(var(--gray-200));
+  }
+  
+  .dark .card {
+    background: rgb(var(--gray-800));
+    border-color: rgb(var(--gray-700));
+  }
+}
+
+/* Loading animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.loading-spinner {
+  @apply inline-block w-4 h-4 border-2 rounded-full;
+  border-color: rgb(var(--gray-300));
+  border-top-color: rgb(var(--primary-600));
+  animation: spin 1s linear infinite;
+}
+
+/* React Hot Toast Custom Styles */
+[data-sonner-toast] {
+  background: rgb(var(--gray-50)) !important;
+  border: 1px solid rgb(var(--gray-200)) !important;
+  color: rgb(var(--gray-900)) !important;
+}
+
+.dark [data-sonner-toast] {
+  background: rgb(var(--gray-800)) !important;
+  border: 1px solid rgb(var(--gray-600)) !important;
+  color: rgb(var(--gray-100)) !important;
+}

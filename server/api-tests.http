@@ -1,0 +1,250 @@
+### Paisa Pal Backend API Testing
+### Base URL
+@baseUrl = http://localhost:5000
+@contentType = application/json
+
+### Variables (will be set after registration)
+@authToken = 
+@userId = 
+@transactionId = 
+
+###############################################
+### 1. AUTHENTICATION ENDPOINTS
+###############################################
+
+### Register a new user
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "testpass123"
+}
+
+### Login user
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "testpass123"
+}
+
+###############################################
+### 2. USER PROFILE ENDPOINTS
+###############################################
+
+### Get user profile (requires auth token)
+GET {{baseUrl}}/api/profile
+Authorization: Bearer {{authToken}}
+
+### Update user profile
+PUT {{baseUrl}}/api/profile
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Updated Test User",
+  "phone": "+1234567890"
+}
+
+###############################################
+### 3. TRANSACTION ENDPOINTS
+###############################################
+
+### Get all transactions
+GET {{baseUrl}}/api/transactions
+Authorization: Bearer {{authToken}}
+
+### Create a new transaction
+POST {{baseUrl}}/api/transactions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 100.50,
+  "category": "Food",
+  "description": "Test transaction",
+  "type": "expense",
+  "date": "2025-01-29T07:00:00.000Z"
+}
+
+### Update transaction (replace :id with actual transaction ID)
+PUT {{baseUrl}}/api/transactions/{{transactionId}}
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 150.75,
+  "description": "Updated test transaction"
+}
+
+### Delete transaction (replace :id with actual transaction ID)
+DELETE {{baseUrl}}/api/transactions/{{transactionId}}
+Authorization: Bearer {{authToken}}
+
+###############################################
+### 4. BUDGET ENDPOINTS
+###############################################
+
+### Get all budgets
+GET {{baseUrl}}/api/budgets
+Authorization: Bearer {{authToken}}
+
+### Create a new budget
+POST {{baseUrl}}/api/budgets
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "category": "Food",
+  "amount": 500,
+  "period": "monthly"
+}
+
+###############################################
+### 5. INVESTMENT ENDPOINTS
+###############################################
+
+### Get all investments
+GET {{baseUrl}}/api/investments
+Authorization: Bearer {{authToken}}
+
+### Create a new investment
+POST {{baseUrl}}/api/investments
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test Stock",
+  "symbol": "TEST",
+  "quantity": 10,
+  "purchasePrice": 100,
+  "currentPrice": 110
+}
+
+###############################################
+### 6. ANALYTICS ENDPOINTS
+###############################################
+
+### Get category analytics
+GET {{baseUrl}}/api/analytics/category
+Authorization: Bearer {{authToken}}
+
+### Get monthly analytics
+GET {{baseUrl}}/api/analytics/monthly
+Authorization: Bearer {{authToken}}
+
+### Get budget vs actual analytics
+GET {{baseUrl}}/api/analytics/budget-vs-actual
+Authorization: Bearer {{authToken}}
+
+###############################################
+### 7. AI ENDPOINTS
+###############################################
+
+### Chat with AI
+POST {{baseUrl}}/api/ai/chat
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "message": "What are my spending patterns?"
+}
+
+### Get latest AI insights
+GET {{baseUrl}}/api/ai/insights/latest
+Authorization: Bearer {{authToken}}
+
+###############################################
+### 8. NOTIFICATION ENDPOINTS
+###############################################
+
+### Get all notifications
+GET {{baseUrl}}/api/notifications
+Authorization: Bearer {{authToken}}
+
+### Create a notification
+POST {{baseUrl}}/api/notifications
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Test Notification",
+  "message": "This is a test notification",
+  "type": "info"
+}
+
+###############################################
+### 9. INSIGHTS ENDPOINTS
+###############################################
+
+### Get insights
+GET {{baseUrl}}/api/insights
+Authorization: Bearer {{authToken}}
+
+###############################################
+### 10. FCM ENDPOINTS
+###############################################
+
+### Save FCM token
+POST {{baseUrl}}/api/fcm/save
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "token": "test-fcm-token-123"
+}
+
+### Delete FCM token
+POST {{baseUrl}}/api/fcm/delete
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "token": "test-fcm-token-123"
+}
+
+###############################################
+### 11. STRIPE ENDPOINTS
+###############################################
+
+### Create subscription session
+POST {{baseUrl}}/api/stripe/create-subscription-session
+Content-Type: {{contentType}}
+
+{
+  "priceId": "price_test_123"
+}
+
+###############################################
+### 12. FINANCIAL SUMMARY ENDPOINTS
+###############################################
+
+### Get financial summary
+GET {{baseUrl}}/api/finance/summary
+Authorization: Bearer {{authToken}}
+
+### Update financial summary
+POST {{baseUrl}}/api/finance/summary
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "totalIncome": 5000,
+  "totalExpenses": 3000,
+  "totalSavings": 2000,
+  "totalInvestments": 1000
+}
+
+###############################################
+### 13. RECEIPT ENDPOINTS (File Upload)
+###############################################
+
+### Upload receipt (requires multipart/form-data)
+# POST {{baseUrl}}/api/receipts/upload
+# Authorization: Bearer {{authToken}}
+# Content-Type: multipart/form-data
+# 
+# < ./test-receipt.jpg
