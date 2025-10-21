@@ -58,7 +58,7 @@ export default function InsightsPage() {
     "Am I on track with my savings goals?",
     "Show me unusual transactions this week"
   ]
-// In your InsightsPage.jsx
+
 const getTopCategories = (transactions) => {
   const categories = transactions
     .filter(t => t.type === 'expense')
@@ -69,7 +69,7 @@ const getTopCategories = (transactions) => {
     
   return Object.entries(categories)
     .sort(([,a], [,b]) => b - a)
-    .slice(0, 5)
+    .slice(0, 3) // ✅ CHANGED: Only top 3 instead of 5
     .map(([category, amount]) => ({ category, amount }))
 }
 
@@ -84,10 +84,12 @@ const getBudgetStatus = (budgets, transactions) => {
       budgeted: budget.amount,
       spent,
       remaining: budget.amount - spent,
-      percentage: (spent / budget.amount) * 100
+      percentage: Math.round((spent / budget.amount) * 100)
     }
   })
 }
+
+
 
  const handleSendMessage = async (message = inputMessage) => {
   if (!message.trim()) return
@@ -106,41 +108,74 @@ const getBudgetStatus = (budgets, transactions) => {
     const response = await chatWithAI({
       message,
       context: {
-        // ✅ ADD: Send actual financial data
-        transactions: transactions.slice(-30), // Last 30 transactions
-        budgets: budgets,                      // All user budgets
-        recentInsights: insights.slice(0, 3), // Recent insights
-        totalIncome: transactions
-          .filter(t => t.type === 'income')
-          .reduce((sum, t) => sum + t.amount, 0),
-        totalExpenses: transactions
-          .filter(t => t.type === 'expense') 
-          .reduce((sum, t) => sum + t.amount, 0),
-        topSpendingCategories: getTopCategories(transactions),
-        budgetStatus: getBudgetStatus(budgets, transactions)
+        // ✅ OPTIMIZED: Send only essential slim data
+        recentTransactions: (transactions || []).slice(-15).map(t => ({
+          amount: t.amount,
+          category: t.category,
+          type: t.type,
+          date: t.date
+        })),
+        
+        budgets: (budgets || []).map(b => ({
+          category: b.category,
+          limit: b.amount,
+          spent: b.spent || 0
+        })),
+        
+        summary: {
+          totalIncome: (transactions || [])
+            .filter(t => t.type === 'income')
+            .reduce((sum, t) => sum + t.amount, 0),
+          totalExpenses: (transactions || [])
+            .filter(t => t.type === 'expense') 
+            .reduce((sum, t) => sum + t.amount, 0),
+          topSpendingCategories: getTopCategories(transactions || []),
+          budgetStatus: getBudgetStatus(budgets || [], transactions || [])
+        }
       }
     }).unwrap()
 
-      const aiMessage = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: response.message || response.response,
-        suggestions: response.suggestions,
-        timestamp: new Date()
-      }
+    const aiMessage = {
+      id: Date.now() + 1,
+      type: 'ai',
+      content: response.message || response.response,
+      suggestions: response.suggestions,
+      timestamp: new Date()
+    }
 
-      setChatMessages(prev => [...prev, aiMessage])
-    } catch (error) {
+    setChatMessages(prev => [...prev, aiMessage])
+    
+  } catch (error) {
+    console.error('AI Chat Error:', error) // ✅ ADDED: Error logging
+    
+    // ✅ ADDED: Specific rate limit handling
+    if (error.status === 429) {
       const errorMessage = {
         id: Date.now() + 1,
         type: 'ai',
-        content: "I'm sorry, I'm having trouble processing your request right now. Please try again.",
+        content: "I'm getting too many requests right now. Please wait a minute and try again! ⏳",
         timestamp: new Date()
       }
       setChatMessages(prev => [...prev, errorMessage])
-      toast.error('Failed to get AI response')
+      toast.error('Rate limit reached. Wait 60 seconds.')
+      return
     }
+    
+    // ✅ IMPROVED: Better error messages
+    const errorMsg = error?.data?.message || error?.message || 'AI service unavailable'
+    
+    const errorMessage = {
+      id: Date.now() + 1,
+      type: 'ai',
+      content: `Sorry, I encountered an error: ${errorMsg}. Please try again.`,
+      timestamp: new Date()
+    }
+    
+    setChatMessages(prev => [...prev, errorMessage])
+    toast.error(errorMsg)
   }
+}
+
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {

@@ -19,9 +19,11 @@ export const budgetApi = createApi({
   endpoints: (builder) => ({
     getBudgets: builder.query({
       query: () => '/',
-      providesTags: ['Budget'],
+      providesTags: [{ type: 'Budget', id: 'LIST' }],
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
     }),
-    
+   
     createBudget: builder.mutation({
       query: (budgetData) => ({
         url: '/',
@@ -29,7 +31,7 @@ export const budgetApi = createApi({
         body: budgetData,
       }),
       invalidatesTags: ['Budget'],
-    }),
+    }), 
     
     updateBudget: builder.mutation({
       query: ({ id, ...data }) => ({

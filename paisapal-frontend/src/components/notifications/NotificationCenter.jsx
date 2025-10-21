@@ -7,7 +7,7 @@ import {
 import { 
   useGetNotificationsQuery, 
   useMarkAsReadMutation, 
-  useDeleteNotificationMutation 
+  // useDeleteNotificationMutation 
 } from '../../services/notificationApi'
 import { toast } from 'react-hot-toast'
 import Button from '../ui/Button'
@@ -181,7 +181,7 @@ export default function NotificationCenter() {
 
   const { data, isLoading, error, refetch } = useGetNotificationsQuery()
   const [markAsRead] = useMarkAsReadMutation()
-  const [deleteNotification] = useDeleteNotificationMutation()
+  // const [deleteNotification] = useDeleteNotificationMutation()
 
   const notifications = data?.notifications || []
   const unreadCount = notifications.filter(n => !n.isRead).length
@@ -202,15 +202,15 @@ export default function NotificationCenter() {
     }
   }
 
-  const handleDelete = async (notificationId) => {
-    try {
-      await deleteNotification(notificationId).unwrap()
-      toast.success('Notification deleted')
-      refetch()
-    } catch (error) {
-      toast.error('Failed to delete notification')
-    }
-  }
+  // const handleDelete = async (notificationId) => {
+  //   try {
+  //     await deleteNotification(notificationId).unwrap()
+  //     toast.success('Notification deleted')
+  //     refetch()
+  //   } catch (error) {
+  //     toast.error('Failed to delete notification')
+  //   }
+  // }
 
   const handleMarkAllAsRead = async () => {
     try {
@@ -334,7 +334,7 @@ export default function NotificationCenter() {
               key={notification._id}
               notification={notification}
               onMarkAsRead={handleMarkAsRead}
-              onDelete={handleDelete}
+              // onDelete={handleDelete}
             />
           ))}
         </div>

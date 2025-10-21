@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
-import { Bell, BellOff, Check, CheckCheck, Trash2, Settings, Filter } from 'lucide-react'
+import { Bell, Check, Settings, Filter } from 'lucide-react'
 import { 
   useGetNotificationsQuery, 
-  useMarkAsReadMutation, 
-  useDeleteNotificationMutation,
-  useMarkAllAsReadMutation 
+  useMarkAsReadMutation
 } from '../services/notificationApi'
 import { toast } from 'react-hot-toast'
 import Button from '../components/ui/Button'
@@ -19,11 +17,32 @@ export default function NotificationsPage() {
 
   const { data, isLoading, refetch } = useGetNotificationsQuery()
   const [markAsRead] = useMarkAsReadMutation()
-  const [deleteNotification] = useDeleteNotificationMutation()
-  const [markAllAsRead] = useMarkAllAsReadMutation()
 
-  const notifications = data?.notifications || []
+  const notifications = data?.data || [] // ✅ FIXED: Backend returns { data: [...] }
   const unreadCount = notifications.filter(n => !n.isRead).length
+
+  // ✅ NEW: Manual mark all as read (calls markAsRead for each notification)
+  const handleMarkAllAsRead = async () => {
+    const unreadNotifications = notifications.filter(n => !n.isRead)
+    
+    if (unreadNotifications.length === 0) {
+      toast.success('No unread notifications')
+      return
+    }
+
+    try {
+      // Mark each unread notification as read
+      await Promise.all(
+        unreadNotifications.map(notification => 
+          markAsRead(notification._id).unwrap()
+        )
+      )
+      toast.success('All notifications marked as read')
+      refetch() // Refresh the list
+    } catch (error) {
+      toast.error('Failed to mark notifications as read')
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -45,8 +64,8 @@ export default function NotificationsPage() {
           {unreadCount > 0 && (
             <Button
               variant="secondary"
-              leftIcon={<CheckCheck className="w-4 h-4" />}
-              onClick={() => markAllAsRead()}
+              leftIcon={<Check className="w-4 h-4" />}
+              onClick={handleMarkAllAsRead}
             >
               Mark All Read
             </Button>
@@ -92,7 +111,8 @@ function NotificationSettings({ onClose }) {
   })
 
   const handleSave = () => {
-    toast.success('Notification preferences saved')
+    // TODO: Implement settings save to backend when endpoint is available
+    toast.success('Notification preferences saved locally')
     onClose()
   }
 

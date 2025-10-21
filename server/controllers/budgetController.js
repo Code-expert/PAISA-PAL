@@ -13,6 +13,7 @@ export const getBudgets = catchAsync(async (req, res) => {
         $match: { 
           user: req.user.id, 
           category: budget.category,
+          type: 'expense', // ✅ CRITICAL FIX: Only count expenses!
           date: { $gte: budget.startDate, $lte: budget.endDate }
         } 
       },
@@ -33,6 +34,7 @@ export const getBudgets = catchAsync(async (req, res) => {
   
   res.json({ success: true, budgets: budgetsData });
 });
+
 
 export const createBudget = catchAsync(async (req, res) => {
   // Validate required fields
@@ -71,16 +73,18 @@ export const createBudget = catchAsync(async (req, res) => {
   });
   
   // Check if actual > budget for this category
-  const actual = await Transaction.aggregate([
-    { 
-      $match: { 
-        user: req.user.id, 
-        category: budget.category,
-        date: { $gte: budget.startDate, $lte: budget.endDate }
-      } 
-    },
-    { $group: { _id: null, total: { $sum: '$amount' } } }
-  ]);
+const actual = await Transaction.aggregate([
+  { 
+    $match: { 
+      user: req.user.id, 
+      category: budget.category,
+      type: 'expense', // ✅ CRITICAL FIX: Only count expenses!
+      date: { $gte: budget.startDate, $lte: budget.endDate }
+    } 
+  },
+  { $group: { _id: null, total: { $sum: '$amount' } } }
+]);
+
   
   if (actual[0] && actual[0].total > budget.amount) {
     await sendPush(

@@ -135,20 +135,20 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
 
           {/* Category and Period */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Controller
-              name="category"
-              control={control}
-              rules={{ required: 'Category is required' }}
-              render={({ field }) => (
-                <Select
-                  label="Category"
-                  options={BUDGET_CATEGORIES}
-                  placeholder="Select a category"
-                  error={errors.category?.message}
-                  {...field}
-                />
-              )}
-            />
+<Controller
+  name="period"
+  control={control}
+  rules={{ required: 'Period is required' }}
+  render={({ field }) => (
+    <Select
+      label="Period"
+      options={BUDGET_PERIODS}
+      placeholder="Select period"
+      error={errors.period?.message}
+      {...field}
+    />
+  )}
+/>
 
             <Controller
               name="period"

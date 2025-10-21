@@ -15,8 +15,9 @@ const baseQuery = fetchBaseQuery({
 export const transactionApi = createApi({
   reducerPath: 'transactionApi',
   baseQuery,
-  tagTypes: ['Transaction'],
+  tagTypes: ['Transaction', 'Budget'], // ✅ ADDED 'Budget' tag
   endpoints: (builder) => ({
+    
     // Get Transactions with filters and pagination
     getTransactions: builder.query({
       query: ({ 
@@ -49,15 +50,20 @@ export const transactionApi = createApi({
           : [{ type: 'Transaction', id: 'LIST' }],
     }),
     
-    // Create Transaction
+    // ✅ MODIFIED: Create Transaction - now invalidates Budget tag
     createTransaction: builder.mutation({
       query: (transactionData) => ({
         url: '/',
         method: 'POST',
         body: transactionData,
       }),
-      invalidatesTags: [{ type: 'Transaction', id: 'LIST' }],
-      // Optimistic update
+      // ✅ FIXED: Invalidate both Transaction and Budget tags
+      invalidatesTags: [
+        { type: 'Transaction', id: 'LIST' },
+        { type: 'Budget', id: 'LIST' }, // ✅ This refreshes budgets!
+      ],
+      
+      // Optimistic update for transactions
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           transactionApi.util.updateQueryData('getTransactions', {}, (draft) => {
@@ -78,23 +84,32 @@ export const transactionApi = createApi({
       },
     }),
     
-    // Update Transaction
+    // ✅ MODIFIED: Update Transaction - now invalidates Budget tag
     updateTransaction: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `/${id}`,
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Transaction', id }],
+      // ✅ FIXED: Invalidate both Transaction and Budget tags
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Transaction', id },
+        { type: 'Budget', id: 'LIST' }, // ✅ This refreshes budgets!
+      ],
     }),
     
-    // Delete Transaction
+    // ✅ MODIFIED: Delete Transaction - now invalidates Budget tag
     deleteTransaction: builder.mutation({
       query: (id) => ({
         url: `/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: [{ type: 'Transaction', id: 'LIST' }],
+      // ✅ FIXED: Invalidate both Transaction and Budget tags
+      invalidatesTags: [
+        { type: 'Transaction', id: 'LIST' },
+        { type: 'Budget', id: 'LIST' }, // ✅ This refreshes budgets!
+      ],
+      
       // Optimistic delete
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(

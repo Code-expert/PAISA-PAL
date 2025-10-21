@@ -17,9 +17,9 @@ import EmptyState from '../common/EmptyState'
 function BudgetCard({ budget, onEdit, onDelete }) {
   const [showMenu, setShowMenu] = useState(false)
   
-  const spent = budget.spent ?? 0
-  const amount = budget.amount ?? 0
-  const alertThreshold = budget.alertThreshold ?? 80
+  const spent = budget.actual ?? 0  
+const amount = budget.amount ?? 0
+const alertThreshold = budget.alertThreshold ?? 80
   
   const percentage = amount > 0 ? (spent / amount) * 100 : 0
   const remaining = amount - spent
@@ -176,7 +176,7 @@ export default function BudgetList({ onEdit, onCreate }) {
     if (filters.period && budget.period !== filters.period) return false
     
     if (filters.status) {
-      const percentage = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0
+      const percentage = budget.amount > 0 ? (budget.actual / budget.amount) * 100 : 0
       
       if (filters.status === 'over' && percentage <= 100) return false
       if (filters.status === 'warning' && (percentage < budget.alertThreshold || percentage > 100)) return false
@@ -298,7 +298,7 @@ export default function BudgetList({ onEdit, onCreate }) {
                 On Track
               </h3>
               <p className="text-2xl font-bold text-green-600">
-                {budgets.filter(b => (b.spent / b.amount * 100) < b.alertThreshold).length}
+                {budgets.filter(b => (b.actual / b.amount * 100) < b.alertThreshold).length}
               </p>
             </div>
           </Card>
@@ -309,7 +309,7 @@ export default function BudgetList({ onEdit, onCreate }) {
                 Over Budget
               </h3>
               <p className="text-2xl font-bold text-red-600">
-                {budgets.filter(b => (b.spent / b.amount * 100) > 100).length}
+                {budgets.filter(b => (b.actual / b.amount * 100) > 100).length}
               </p>
             </div>
           </Card>

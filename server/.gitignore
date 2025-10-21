@@ -2,6 +2,10 @@
 logs/
 *.log
 
+/server/config/google-vision-key.json
+/config/google-vision-key.json
+*.json
+
 # Environment variables
 .env
 .env.local

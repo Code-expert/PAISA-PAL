@@ -14,7 +14,7 @@ import { budgetApi } from '../services/budgetApi'
 import { investmentApi } from '../services/investmentApi'
 import { receiptApi } from '../services/receiptApi'
 import { analyticsApi } from '../services/analyticsApi'
-import { insightApi } from '../services/insightApi'
+// import { insightApi } from '../services/insightApi'
 import { notificationApi } from '../services/notificationApi'
 import { financialApi } from '../services/financialApi'
 import { fcmApi } from '../services/fcmApi'
@@ -50,7 +50,7 @@ const store = configureStore({
     [investmentApi.reducerPath]: investmentApi.reducer,
     [receiptApi.reducerPath]: receiptApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
-    [insightApi.reducerPath]: insightApi.reducer,
+    // [insightApi.reducerPath]: insightApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [financialApi.reducerPath]: financialApi.reducer,
     [fcmApi.reducerPath]: fcmApi.reducer,
@@ -80,7 +80,7 @@ const store = configureStore({
       investmentApi.middleware,
       receiptApi.middleware,
       analyticsApi.middleware,
-      insightApi.middleware,
+      // insightApi.middleware,
       notificationApi.middleware,
       financialApi.middleware,
       fcmApi.middleware,

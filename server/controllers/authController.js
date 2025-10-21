@@ -125,14 +125,14 @@ export const login = catchAsync(async (req, res) => {
   }
 
   // Check email verification for regular users (skip for Google users)
-  if (!user.isEmailVerified && !user.googleId) {
-    return res.status(401).json({
-      success: false,
-      message: 'Please verify your email first',
-      requiresEmailVerification: true,
-      email: user.email
-    });
-  }
+  // if (!user.isEmailVerified && !user.googleId) {
+  //   return res.status(401).json({
+  //     success: false,
+  //     message: 'Please verify your email first',
+  //     requiresEmailVerification: true,
+  //     email: user.email
+  //   });
+  // }
 
   const token = generateToken(user);
   const userObj = user.toObject();
