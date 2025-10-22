@@ -1,19 +1,19 @@
 import Budget from '../models/Budget.js';
+import Transaction from '../models/Transaction.js';
 import catchAsync from '../middleware/catchAsync.js';
 import sendPush from '../utils/sendPush.js';
-import Transaction from '../models/Transaction.js';
+import mongoose from 'mongoose';  // ✅ Import mongoose
 
 export const getBudgets = catchAsync(async (req, res) => {
   const budgets = await Budget.find({ user: req.user.id }).sort({ startDate: -1 });
   
-  // Add actual spending data to each budget
   const budgetsData = await Promise.all(budgets.map(async (budget) => {
     const actual = await Transaction.aggregate([
       { 
         $match: { 
-          user: req.user.id, 
+          user: new mongoose.Types.ObjectId(req.user.id),  // ✅ Convert to ObjectId
           category: budget.category,
-          type: 'expense', // ✅ CRITICAL FIX: Only count expenses!
+          type: 'expense',
           date: { $gte: budget.startDate, $lte: budget.endDate }
         } 
       },
@@ -35,9 +35,7 @@ export const getBudgets = catchAsync(async (req, res) => {
   res.json({ success: true, budgets: budgetsData });
 });
 
-
 export const createBudget = catchAsync(async (req, res) => {
-  // Validate required fields
   const { amount, category, startDate, endDate } = req.body;
   
   if (!amount || !category || !startDate || !endDate) {
@@ -47,7 +45,6 @@ export const createBudget = catchAsync(async (req, res) => {
     });
   }
   
-  // Validate amount is a positive number
   if (isNaN(amount) || parseFloat(amount) <= 0) {
     return res.status(400).json({ 
       success: false, 
@@ -55,7 +52,6 @@ export const createBudget = catchAsync(async (req, res) => {
     });
   }
   
-  // Validate date range
   const start = new Date(startDate);
   const end = new Date(endDate);
   
@@ -72,19 +68,18 @@ export const createBudget = catchAsync(async (req, res) => {
     amount: parseFloat(amount)
   });
   
-  // Check if actual > budget for this category
-const actual = await Transaction.aggregate([
-  { 
-    $match: { 
-      user: req.user.id, 
-      category: budget.category,
-      type: 'expense', // ✅ CRITICAL FIX: Only count expenses!
-      date: { $gte: budget.startDate, $lte: budget.endDate }
-    } 
-  },
-  { $group: { _id: null, total: { $sum: '$amount' } } }
-]);
-
+  // ✅ Check if over budget
+  const actual = await Transaction.aggregate([
+    { 
+      $match: { 
+        user: new mongoose.Types.ObjectId(req.user.id),  // ✅ Convert to ObjectId
+        category: budget.category,
+        type: 'expense',
+        date: { $gte: budget.startDate, $lte: budget.endDate }
+      } 
+    },
+    { $group: { _id: null, total: { $sum: '$amount' } } }
+  ]);
   
   if (actual[0] && actual[0].total > budget.amount) {
     await sendPush(
@@ -96,10 +91,9 @@ const actual = await Transaction.aggregate([
   }
   
   res.status(201).json({ success: true, budget });
-}); 
+});
 
 export const updateBudget = catchAsync(async (req, res) => {
-  // Validate amount if provided
   if (req.body.amount !== undefined) {
     if (isNaN(req.body.amount) || parseFloat(req.body.amount) <= 0) {
       return res.status(400).json({ 

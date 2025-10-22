@@ -13,17 +13,18 @@ export default function ReceiptGallery() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedReceipt, setSelectedReceipt] = useState(null)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
-  
+
   // ✅ FIXED: Use correct query hook
   const { data: receiptsData, isLoading, refetch } = useGetReceiptsQuery({
     page: 1,
     limit: 100, // Get all receipts
   })
-  
+  const API_BASE_URL = 'http://localhost:5000'
+
   const [deleteReceipt] = useDeleteReceiptMutation()
-  
+
   // ✅ FIXED: Extract receipts from correct data structure
-  const receipts = receiptsData?.receipts || []
+  const receipts = receiptsData?.data?.receipts || []
 
   // ✅ ADD: Refetch on component mount to always show latest
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function ReceiptGallery() {
 
   const filteredReceipts = receipts.filter(receipt => {
     const matchesSearch = receipt.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         receipt.extractedText?.toLowerCase().includes(searchTerm.toLowerCase())
+      receipt.extractedText?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'all' || receipt.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -88,7 +89,7 @@ export default function ReceiptGallery() {
             <Card.Title>
               Receipt Gallery ({receipts.length}) {/* ✅ Show count */}
             </Card.Title>
-            
+
             <div className="flex space-x-2">
               {/* Search */}
               <div className="relative">
@@ -101,7 +102,7 @@ export default function ReceiptGallery() {
                   className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
-              
+
               {/* Category Filter */}
               <select
                 value={selectedCategory}
@@ -126,7 +127,7 @@ export default function ReceiptGallery() {
             </div>
           </div>
         </Card.Header>
-        
+
         <Card.Content>
           {filteredReceipts.length === 0 ? (
             <div className="text-center py-12">
@@ -137,7 +138,7 @@ export default function ReceiptGallery() {
                 No receipts found
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                {searchTerm || selectedCategory !== 'all' 
+                {searchTerm || selectedCategory !== 'all'
                   ? 'Try adjusting your search or filter criteria'
                   : 'Upload your first receipt to get started'
                 }
@@ -153,15 +154,35 @@ export default function ReceiptGallery() {
                   {/* Receipt Preview */}
                   <div className="aspect-[3/4] bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
                     {receipt.fileType?.startsWith('image/') ? (
+
                       <img
-                        src={receipt.fileUrl}
+                        src={`${API_BASE_URL}${receipt.fileUrl}`}
                         alt={receipt.filename}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                         onError={(e) => {
-                          e.target.src = '/placeholder-receipt.png' // ✅ Fallback image
+                          // ✅ Prevent infinite loop
+                          if (e.target.src !== e.target.dataset.fallback) {
+                            e.target.dataset.fallback = 'true'
+                            // ✅ Use a data URL placeholder or hide the image
+                            e.target.style.display = 'none'
+                            const parent = e.target.parentElement
+                            if (parent && !parent.querySelector('.fallback-icon')) {
+                              parent.innerHTML = `
+            <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 fallback-icon">
+              <div class="text-center">
+                <svg class="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p class="text-xs text-gray-500 mt-2">Image unavailable</p>
+              </div>
+            </div>
+          `
+                            }
+                          }
                         }}
                       />
                     ) : (
+
                       <div className="w-full h-full flex items-center justify-center">
                         <div className="text-center">
                           <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mx-auto mb-2">
@@ -171,7 +192,7 @@ export default function ReceiptGallery() {
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Overlay with actions */}
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
@@ -199,13 +220,13 @@ export default function ReceiptGallery() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Receipt Info */}
                   <div className="p-3">
                     <h4 className="font-medium text-gray-900 dark:text-white text-sm truncate mb-1">
                       {receipt.filename}
                     </h4>
-                    
+
                     <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
                       <span className="flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
@@ -215,14 +236,14 @@ export default function ReceiptGallery() {
                         <span className="font-medium">${receipt.amount}</span>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       {receipt.category && (
                         <Badge variant="secondary" size="sm">
                           {receipt.category}
                         </Badge>
                       )}
-                      
+
                       {receipt.linkedTransaction && (
                         <div className="flex items-center text-xs text-green-600">
                           <Link className="w-3 h-3 mr-1" />
@@ -272,7 +293,7 @@ export default function ReceiptGallery() {
                 </div>
               )}
             </div>
-            
+
             {/* Receipt Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -281,7 +302,7 @@ export default function ReceiptGallery() {
                 </label>
                 <p className="text-sm text-gray-900 dark:text-white">{selectedReceipt.filename}</p>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Upload Date
@@ -290,7 +311,7 @@ export default function ReceiptGallery() {
                   {format(new Date(selectedReceipt.createdAt || selectedReceipt.uploadDate), 'MMM dd, yyyy HH:mm')}
                 </p>
               </div>
-              
+
               {selectedReceipt.amount && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -299,7 +320,7 @@ export default function ReceiptGallery() {
                   <p className="text-sm text-gray-900 dark:text-white">${selectedReceipt.amount}</p>
                 </div>
               )}
-              
+
               {selectedReceipt.category && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -309,7 +330,7 @@ export default function ReceiptGallery() {
                 </div>
               )}
             </div>
-            
+
             {/* Extracted Text */}
             {selectedReceipt.extractedText && (
               <div>
@@ -321,7 +342,7 @@ export default function ReceiptGallery() {
                 </div>
               </div>
             )}
-            
+
             {/* Actions */}
             <div className="flex justify-end space-x-3">
               <Button
@@ -331,7 +352,7 @@ export default function ReceiptGallery() {
                 <Download className="w-4 h-4 mr-2" />
                 Download
               </Button>
-              
+
               <Button
                 variant="danger"
                 onClick={() => {

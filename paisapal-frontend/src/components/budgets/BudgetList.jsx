@@ -166,10 +166,10 @@ export default function BudgetList({ onEdit, onCreate }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [budgetToDelete, setBudgetToDelete] = useState(null)
 
-  const { data, isLoading, error, refetch } = useGetBudgetsQuery()
+  const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery()
   const [deleteBudget, { isLoading: isDeleting }] = useDeleteBudgetMutation()
 
-  const budgets = data?.budgets || []
+const budgets = budgetsData?.budgets || []
 
   // Filter budgets
   const filteredBudgets = budgets.filter(budget => {

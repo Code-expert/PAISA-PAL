@@ -17,6 +17,8 @@ import SpendingChart from '../components/dashboard/SpendingChart'
 import QuickActions from '../components/dashboard/QuickActions'
 import MonthlyOverview from '../components/dashboard/MonthlyOverview'
 import CategoryBreakdown from '../components/dashboard/CategoryBreakdown'
+import { useGetBillRemindersQuery } from '../services/billReminderApi'
+
 
 export default function DashboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('30d')
@@ -30,37 +32,57 @@ export default function DashboardPage() {
   const { data: budgetsData, isLoading: budgetsLoading } = useGetBudgetsQuery()
   const { data: financialSummary, isLoading: summaryLoading } = useGetFinancialSummaryQuery()
 
-  const transactions = transactionsData?.transactions || []
-  const budgets = budgetsData?.budgets || []
+const transactions = transactionsData?.transactions || [];
+const budgets = budgetsData?.budgets || [] 
 
   // Calculate financial metrics
   const financialMetrics = useMemo(() => {
-    const now = new Date()
-    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30))
-    
-    const recentTransactions = transactions.filter(t => 
-      new Date(t.date) >= thirtyDaysAgo
-    )
-    
-    const income = recentTransactions
-      .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const expenses = recentTransactions
-      .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const netIncome = income - expenses
-    const savingsRate = income > 0 ? ((income - expenses) / income * 100) : 0
-    
-    return {
-      totalIncome: income,
-      totalExpenses: expenses,
-      netIncome,
-      savingsRate,
-      transactionCount: recentTransactions.length
-    }
-  }, [transactions])
+  const now = new Date()
+  let fromDate
+
+  // Calculate date range based on selected period
+  switch (selectedPeriod) {
+    case '7d':
+      fromDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      break
+    case '30d':
+      fromDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      break
+    case '90d':
+      fromDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+      break
+    case '1y':
+      fromDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      break
+    default:
+      fromDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+  }
+
+  // Filter transactions based on selected period
+  const filteredTransactions = transactions.filter(t =>
+    new Date(t.date) >= fromDate
+  )
+
+  const income = filteredTransactions
+    .filter(t => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0)
+
+  const expenses = filteredTransactions
+    .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0)
+
+  const netIncome = income - expenses
+  const savingsRate = income > 0 ? ((netIncome / income) * 100) : 0
+
+  return {
+    totalIncome: income,
+    totalExpenses: expenses,
+    netIncome,
+    savingsRate,
+    transactionCount: filteredTransactions.length
+  }
+}, [transactions, selectedPeriod]) 
+
 
   const isLoading = transactionsLoading || budgetsLoading || summaryLoading
 
@@ -334,12 +356,52 @@ function SmartInsights({ transactions }) {
 
 // Upcoming Bills Component
 function UpcomingBills() {
-  const bills = [
-    { name: 'Rent', amount: 1200, due: '2025-09-01', category: 'Housing' },
-    { name: 'Electricity', amount: 85, due: '2025-09-05', category: 'Utilities' },
-    { name: 'Internet', amount: 60, due: '2025-09-10', category: 'Utilities' },
-    { name: 'Phone', amount: 45, due: '2025-09-15', category: 'Utilities' }
-  ]
+  const { data: billsData, isLoading } = useGetBillRemindersQuery({ upcoming: true })
+  const bills = billsData?.bills || []
+
+  if (isLoading) {
+    return (
+      <Card>
+        <Card.Header>
+          <Card.Title className="flex items-center">
+            <Calendar className="w-5 h-5 mr-2" />
+            Upcoming Bills
+          </Card.Title>
+        </Card.Header>
+        <Card.Content>
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            ))}
+          </div>
+        </Card.Content>
+      </Card>
+    )
+  }
+
+  if (bills.length === 0) {
+    return (
+      <Card>
+        <Card.Header>
+          <Card.Title className="flex items-center">
+            <Calendar className="w-5 h-5 mr-2" />
+            Upcoming Bills
+          </Card.Title>
+        </Card.Header>
+        <Card.Content>
+          <div className="text-center py-8">
+            <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+            <p className="text-gray-500 dark:text-gray-400 mb-4">
+              No upcoming bills
+            </p>
+            <Button variant="primary" size="sm" onClick={() => window.location.href = '/bills'}>
+              Add Bill Reminder
+            </Button>
+          </div>
+        </Card.Content>
+      </Card>
+    )
+  }
 
   return (
     <Card>
@@ -351,28 +413,58 @@ function UpcomingBills() {
       </Card.Header>
       <Card.Content>
         <div className="space-y-3">
-          {bills.map((bill, index) => (
-            <div key={index} className="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {bill.name}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Due: {new Date(bill.due).toLocaleDateString()}
-                </p>
+          {bills.slice(0, 4).map((bill) => {
+            const daysUntilDue = Math.ceil((new Date(bill.dueDate) - new Date()) / (1000 * 60 * 60 * 24))
+            const isOverdue = daysUntilDue < 0
+            const isDueSoon = daysUntilDue <= 3 && daysUntilDue >= 0
+            
+            return (
+              <div key={bill._id} className="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {bill.name}
+                  </p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <p className={`text-sm ${
+                      isOverdue ? 'text-red-600 font-medium' :
+                      isDueSoon ? 'text-yellow-600 font-medium' :
+                      'text-gray-600 dark:text-gray-400'
+                    }`}>
+                      {isOverdue 
+                        ? `Overdue by ${Math.abs(daysUntilDue)} day${Math.abs(daysUntilDue) !== 1 ? 's' : ''}`
+                        : daysUntilDue === 0
+                        ? 'Due today'
+                        : daysUntilDue === 1
+                        ? 'Due tomorrow'
+                        : `Due in ${daysUntilDue} days`
+                      }
+                    </p>
+                    {(isOverdue || isDueSoon) && (
+                      <span className="text-xs">⚠️</span>
+                    )}
+                  </div>
+                </div>
+                <div className="text-right ml-4">
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    ${bill.amount.toFixed(2)}
+                  </p>
+                  <Badge 
+                    variant={isOverdue ? 'error' : isDueSoon ? 'warning' : 'secondary'} 
+                    size="sm"
+                    className="mt-1"
+                  >
+                    {bill.category}
+                  </Badge>
+                </div>
               </div>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  ${bill.amount}
-                </p>
-                <Badge variant="secondary" size="sm">
-                  {bill.category}
-                </Badge>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
-        <Button variant="secondary" className="w-full mt-4">
+        <Button 
+          variant="secondary" 
+          className="w-full mt-4"
+          onClick={() => window.location.href = '/bills'}
+        >
           View All Bills
         </Button>
       </Card.Content>

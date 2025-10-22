@@ -44,14 +44,40 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
     try {
-      await updateProfile({
-        ...formData,
-        photo: profileImage
-      }).unwrap()
+      // ✅ Build payload with only non-empty fields
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+      }
+      
+      // Add optional fields only if they have values
+      if (formData.phone && formData.phone.trim() !== '') {
+        payload.phone = formData.phone
+      }
+      
+      if (formData.dateOfBirth) {
+        payload.dateOfBirth = formData.dateOfBirth
+      }
+      
+      if (formData.occupation && formData.occupation.trim() !== '') {
+        payload.occupation = formData.occupation
+      }
+      
+      if (formData.bio && formData.bio.trim() !== '') {
+        payload.bio = formData.bio
+      }
+      
+      if (profileImage && profileImage !== user?.photo) {
+        payload.photo = profileImage
+      }
+      
+      await updateProfile(payload).unwrap()
       toast.success('Profile updated successfully!')
     } catch (error) {
-      toast.error('Failed to update profile')
+      toast.error(error?.data?.message || 'Failed to update profile')
+      console.error('Profile update error:', error)
     }
   }
 
@@ -129,22 +155,23 @@ export default function ProfilePage() {
                     onChange={handleInputChange}
                     leftIcon={<Mail className="w-4 h-4" />}
                     required
-                    disabled={user?.googleId} // Disable if Google user
+                    disabled={user?.googleId}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Phone Number"
+                    label="Phone Number (Optional)"
                     name="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={handleInputChange}
                     leftIcon={<Phone className="w-4 h-4" />}
+                    placeholder="+1234567890"
                   />
                   
                   <Input
-                    label="Date of Birth"
+                    label="Date of Birth (Optional)"
                     name="dateOfBirth"
                     type="date"
                     value={formData.dateOfBirth}
@@ -154,7 +181,7 @@ export default function ProfilePage() {
                 </div>
 
                 <Input
-                  label="Occupation"
+                  label="Occupation (Optional)"
                   name="occupation"
                   value={formData.occupation}
                   onChange={handleInputChange}
@@ -163,7 +190,7 @@ export default function ProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Bio
+                    Bio (Optional)
                   </label>
                   <textarea
                     name="bio"

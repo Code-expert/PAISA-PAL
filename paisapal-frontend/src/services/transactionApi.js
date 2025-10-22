@@ -50,17 +50,15 @@ export const transactionApi = createApi({
           : [{ type: 'Transaction', id: 'LIST' }],
     }),
     
-    // ✅ MODIFIED: Create Transaction - now invalidates Budget tag
     createTransaction: builder.mutation({
       query: (transactionData) => ({
         url: '/',
         method: 'POST',
         body: transactionData,
       }),
-      // ✅ FIXED: Invalidate both Transaction and Budget tags
       invalidatesTags: [
         { type: 'Transaction', id: 'LIST' },
-        { type: 'Budget', id: 'LIST' }, // ✅ This refreshes budgets!
+        { type: 'Budget', id: 'LIST' }, 
       ],
       
       // Optimistic update for transactions

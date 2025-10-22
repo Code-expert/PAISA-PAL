@@ -1,25 +1,17 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Menu, Bell, Search, Sun, Moon, User } from 'lucide-react'
-import {
-  toggleSidebar,
-  toggleDarkMode,
-  selectDarkMode
-} from '../../store/slices/uiSlice'
-import {
-  selectCurrentUser,
-  logout
-} from '../../store/slices/authSlice'
+import { Menu, Bell, Search, User } from 'lucide-react'
+import { toggleSidebar } from '../../store/slices/uiSlice'
+import { selectCurrentUser, logout } from '../../store/slices/authSlice'
 import { useLogoutMutation } from '../../services/authApi'
 import { useGetNotificationsQuery } from '../../services/notificationApi'
+import ThemeToggle from '../ui/ThemeToggle'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
-import clsx from 'clsx'
 
 export default function Navigation() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const darkMode = useSelector(selectDarkMode)
   const user = useSelector(selectCurrentUser)
 
   const [logoutMutation] = useLogoutMutation()
@@ -29,10 +21,6 @@ export default function Navigation() {
 
   const handleSidebarToggle = () => {
     dispatch(toggleSidebar())
-  }
-
-  const handleDarkModeToggle = () => {
-    dispatch(toggleDarkMode())
   }
 
   const handleLogout = async () => {
@@ -47,7 +35,7 @@ export default function Navigation() {
   }
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Left Section */}
@@ -55,7 +43,8 @@ export default function Navigation() {
             {/* Mobile menu button */}
             <button
               onClick={handleSidebarToggle}
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden"
+              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden transition-colors"
+              aria-label="Toggle sidebar"
             >
               <Menu className="h-6 w-6" />
             </button>
@@ -68,7 +57,7 @@ export default function Navigation() {
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-colors"
                   placeholder="Search transactions, budgets..."
                 />
               </div>
@@ -76,28 +65,20 @@ export default function Navigation() {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-4">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={handleDarkModeToggle}
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              {darkMode ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </button>
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Dark Mode Toggle - Now using ThemeToggle component */}
+            <ThemeToggle />
 
             {/* Notifications */}
             <div className="relative">
               <Link
                 to="/notifications"
-                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative"
+                aria-label={`Notifications ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}`}
               >
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 block h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute top-0 right-0 block h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium animate-pulse">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
@@ -106,43 +87,47 @@ export default function Navigation() {
 
             {/* User Menu */}
             <div className="relative group">
-              <button className="flex items-center space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+              <button 
+                className="flex items-center space-x-2 sm:space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label="User menu"
+              >
                 {user?.avatar || user?.photo ? (
                   <img
-                    className="h-8 w-8 rounded-full object-cover"
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
                     src={user.avatar || user.photo}
                     alt={user.name}
                   />
                 ) : (
-                  <div className="h-8 w-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
-                    <User className="h-5 w-5 text-primary-600" />
+                  <div className="h-8 w-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center ring-2 ring-gray-200 dark:ring-gray-700">
+                    <User className="h-4 w-4 text-white" />
                   </div>
                 )}
-                <span className="hidden md:block text-gray-700 dark:text-gray-300">
+                <span className="hidden md:block text-gray-700 dark:text-gray-300 font-medium">
                   {typeof user?.name === 'string'
                     ? user.name
-                    : `${user?.name?.givenName || ''} ${user?.name?.familyName || ''}`.trim()
+                    : `${user?.name?.givenName || ''} ${user?.name?.familyName || ''}`.trim() || 'User'
                   }
                 </span>
               </button>
 
               {/* Dropdown Menu */}
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200">
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100">
                 <Link
                   to="/profile"
-                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors first:rounded-t-lg"
                 >
                   Your Profile
                 </Link>
                 <Link
                   to="/settings"
-                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   Settings
                 </Link>
+                <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
                 <button
                   onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors last:rounded-b-lg"
                 >
                   Sign out
                 </button>

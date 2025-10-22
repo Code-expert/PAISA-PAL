@@ -44,30 +44,48 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
   })
 
   const onSubmit = async (data) => {
-    try {
-      const investmentData = {
-        ...data,
-        quantity: parseFloat(data.quantity),
-        purchasePrice: parseFloat(data.purchasePrice),
-        currentPrice: parseFloat(data.currentPrice),
-        purchaseDate: new Date(data.purchaseDate).toISOString()
-      }
-
-      if (isEditing) {
-        await updateInvestment({ id: initialData._id, ...investmentData }).unwrap()
-        toast.success('Investment updated successfully!')
-      } else {
-        await createInvestment(investmentData).unwrap()
-        toast.success('Investment added successfully!')
-      }
-      
-      reset()
-      if (onSuccess) onSuccess()
-    } catch (error) {
-      console.error('Investment operation failed:', error)
-      toast.error(error.data?.message || `Failed to ${isEditing ? 'update' : 'add'} investment`)
+  try {
+    console.log('📝 Form data (raw):', data)  // ✅ See what form captures
+    
+    const investmentData = {
+      ...data,
+      quantity: parseFloat(data.quantity),
+      purchasePrice: parseFloat(data.purchasePrice),
+      currentPrice: parseFloat(data.currentPrice),
+      purchaseDate: new Date(data.purchaseDate).toISOString()
     }
+
+    console.log('📤 Sending to backend:', investmentData)  // ✅ See what's being sent
+    console.log('🔢 Data types:', {
+      quantity: typeof investmentData.quantity,
+      purchasePrice: typeof investmentData.purchasePrice,
+      currentPrice: typeof investmentData.currentPrice,
+      isQuantityNaN: isNaN(investmentData.quantity),
+      isPurchasePriceNaN: isNaN(investmentData.purchasePrice),
+      isCurrentPriceNaN: isNaN(investmentData.currentPrice),
+    })
+
+    if (isEditing) {
+      const result = await updateInvestment({ id: initialData._id, ...investmentData }).unwrap()
+      console.log('✅ Update success:', result)
+      toast.success('Investment updated successfully!')
+    } else {
+      const result = await createInvestment(investmentData).unwrap()
+      console.log('✅ Create success:', result)
+      toast.success('Investment added successfully!')
+    }
+    
+    reset()
+    if (onSuccess) onSuccess()
+  } catch (error) {
+    console.error('❌ Full error:', error)
+    console.error('❌ Error status:', error.status)
+    console.error('❌ Error data:', error.data)
+    console.error('❌ Error message:', error.data?.message)
+    toast.error(error.data?.message || `Failed to ${isEditing ? 'update' : 'add'} investment`)
   }
+}
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

@@ -25,6 +25,7 @@ const navigation = [
   { name: 'Receipts', href: '/receipts', icon: Receipt },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'AI Insights', href: '/insights', icon: Brain },
+  { name: 'Bills', href: '/bills', icon: CreditCard }
 ]
 
 export default function Sidebar() {

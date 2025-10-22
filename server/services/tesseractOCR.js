@@ -6,12 +6,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// ✅ ADD: JSON cleaner helper
 const cleanJSONResponse = (text) => {
   return text.replace(/``````\n?/g, '').trim();
 };
 
-// ✅ Preprocess image with Sharp for better OCR accuracy
 export const preprocessImage = async (imagePath) => {
   const processedPath = imagePath.replace(/\.(jpg|jpeg|png)$/i, '_processed.jpg');
   
@@ -28,7 +26,6 @@ export const preprocessImage = async (imagePath) => {
   return processedPath;
 };
 
-// ✅ Extract text with image preprocessing
 export const extractTextFromImage = async (imagePath) => {
   try {
     console.log('📝 Extracting text from:', imagePath);
@@ -44,7 +41,6 @@ export const extractTextFromImage = async (imagePath) => {
       }
     );
     
-    // Delete processed image to save space
     if (fs.existsSync(processedPath)) {
       fs.unlinkSync(processedPath);
     }
@@ -58,13 +54,10 @@ export const extractTextFromImage = async (imagePath) => {
   }
 };
 
-// ✅ FIXED: Use Gemini AI to parse messy OCR text
 export const parseWithGemini = async (ocrText) => {
   try {
-    // ✅ FIXED: Use correct model name
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     
-    // ✅ IMPROVED: Better prompt
     const prompt = `You are a receipt parser. Extract information from this OCR text.
 
 Receipt Text:
@@ -98,7 +91,6 @@ If you cannot extract a field:
     
     console.log('🤖 Raw Gemini response:', aiReply.substring(0, 100) + '...');
     
-    // ✅ FIXED: Clean markdown properly
     const cleanJson = cleanJSONResponse(aiReply);
     
     const parsed = JSON.parse(cleanJson);
@@ -113,15 +105,12 @@ If you cannot extract a field:
   }
 };
 
-// ✅ FIXED: Parse receipt data with better validation
 export const parseReceiptData = async (extractedText) => {
   console.log('🔍 Parsing receipt data...');
   
   try {
-    // Try Gemini AI parsing first
     const geminiResult = await parseWithGemini(extractedText);
     
-    // ✅ FIXED: Better validation
     if (geminiResult && geminiResult.merchant && geminiResult.merchant !== 'Unknown Merchant') {
       console.log('✅ Using Gemini parsing result');
       return {
@@ -138,17 +127,14 @@ export const parseReceiptData = async (extractedText) => {
     throw new Error('Gemini returned invalid data');
     
   } catch (error) {
-    // Fallback to regex parsing if Gemini fails
     console.log('⚠️ Gemini failed, using regex parsing...');
     return parseReceiptWithRegex(extractedText);
   }
 };
 
-// ✅ IMPROVED: Regex parsing with Indian currency support
 const parseReceiptWithRegex = (text) => {
   const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   
-  // Extract merchant (usually first non-empty line with letters)
   let merchant = 'Unknown Merchant';
   for (const line of lines) {
     if (line.length > 3 && /[a-zA-Z]/.test(line)) {
@@ -157,7 +143,6 @@ const parseReceiptWithRegex = (text) => {
     }
   }
   
-  // ✅ IMPROVED: Extract amount (₹ symbol or INR or Rs.)
   const amountPatterns = [
     /(?:₹|Rs\.?|INR)\s*(\d+(?:,\d+)*(?:\.\d{2})?)/i,
     /Total[:\s]+(?:₹|Rs\.?)?\s*(\d+(?:,\d+)*(?:\.\d{2})?)/i,

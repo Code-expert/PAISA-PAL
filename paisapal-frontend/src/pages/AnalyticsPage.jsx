@@ -137,7 +137,7 @@ export default function AnalyticsPage() {
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <Select
             value={selectedPeriod}
-            onChange={setSelectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value)} 
             options={TIME_PERIODS}
             className="w-40"
           />

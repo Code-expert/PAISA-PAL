@@ -20,9 +20,12 @@ import analyticsRoutes from './routes/analyticsRoutes.js';
 import fcmRoutes from './routes/fcmRoutes.js';
 import stripeRoutes from './routes/stripeRoutes.js';
 import financialSummaryRoutes from './routes/financialSummaryRoutes.js';
+import billReminderRoutes from './routes/billReminderRoutes.js'
+import { startBillReminderJob } from './jobs/billReminderJob.js'
 
 
 const app = express();
+startBillReminderJob()
 
 // CORS Configuration
 const corsOptions = {
@@ -78,6 +81,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/fcm', fcmRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/finance', financialSummaryRoutes);
+app.use('/api/bills', billReminderRoutes);
 
 import errorHandler from './middleware/errorHandler.js';
 app.use(errorHandler);

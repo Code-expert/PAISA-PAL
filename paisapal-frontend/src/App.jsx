@@ -28,6 +28,7 @@ import SettingsPage from './pages/SettingsPage'
 import NotificationsPage from './pages/NotificationsPage'
 import GoogleCallback from './components/auth/GoogleCallback'
 import NotFoundPage from './pages/error/NotFoundPage'
+import BillsPage from './pages/BillsPage'
 
 function AppContent() {
   const darkMode = useSelector(selectDarkMode)
@@ -65,6 +66,7 @@ function AppContent() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/bills" element={<BillsPage />} />
               </Route>
             </Route>
 
