@@ -1,7 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+// Check localStorage and system preference
+const getInitialDarkMode = () => {
+  // First check localStorage
+  const savedTheme = localStorage.getItem('darkMode')
+  if (savedTheme !== null) {
+    return savedTheme === 'true'
+  }
+  // Then check system preference
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
 const initialState = {
-  darkMode: false,
+  darkMode: getInitialDarkMode(),
   sidebarOpen: false,
   notifications: [],
   loading: false,
@@ -25,10 +36,24 @@ const uiSlice = createSlice({
     // Theme
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
+      // Save to localStorage and update HTML class
+      localStorage.setItem('darkMode', state.darkMode)
+      if (state.darkMode) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     },
     
     setDarkMode: (state, action) => {
       state.darkMode = action.payload
+      // Save to localStorage and update HTML class
+      localStorage.setItem('darkMode', action.payload)
+      if (action.payload) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     },
     
     // Sidebar

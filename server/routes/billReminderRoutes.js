@@ -21,3 +21,4 @@ router.patch('/:id/mark-paid', auth, markBillPaid)
 router.delete('/:id', auth, deleteBillReminder)
 
 export default router
+    

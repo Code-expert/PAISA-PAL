@@ -1,18 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Upload, Camera, FileText, X, CheckCircle, Clock, AlertCircle, Loader2, DollarSign, Store } from 'lucide-react'
+import { Upload, Camera, FileText, X, CheckCircle, Clock, AlertCircle, Loader2, Store } from 'lucide-react'
 import { 
   useUploadReceiptMutation, 
-  useGetReceiptStatusQuery // ✅ Use RTK Query hook instead of fetch
+  useGetReceiptStatusQuery
 } from '../../services/receiptApi'
 import { toast } from 'react-hot-toast'
-import Button from '../ui/Button'
-import Card from '../ui/Card'
 
 export default function ReceiptUpload({ onReceiptUploaded }) {
   const [dragActive, setDragActive] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
   const [previewFiles, setPreviewFiles] = useState([])
-  const [uploadedReceiptIds, setUploadedReceiptIds] = useState([]) // ✅ Track uploaded receipts
+  const [uploadedReceiptIds, setUploadedReceiptIds] = useState([])
   const [processedReceipts, setProcessedReceipts] = useState([])
   const fileInputRef = useRef(null)
   
@@ -90,9 +87,8 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
 
         const result = await uploadReceipt(formData).unwrap()
         
-        toast.success(`${fileObj.name} uploaded successfully! Processing OCR...`)
+        toast.success(`${fileObj.name} uploaded successfully! Processing OCR...`, { icon: '📸' })
         
-        // ✅ Store receipt ID for polling
         const receiptId = result.data?.receipt?._id || result.data?.receipt?.id
         if (receiptId) {
           newReceiptIds.push({
@@ -112,27 +108,28 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
       }
     }
 
-    // ✅ Add to tracking list
     setUploadedReceiptIds(prev => [...prev, ...newReceiptIds])
-    
-    // Clear previews after upload
     setPreviewFiles([])
   }
 
-  // ✅ OCR Status Polling Component
   const OCRStatusTracker = ({ receiptId, fileName }) => {
     const { data, isLoading, error } = useGetReceiptStatusQuery(receiptId, {
-      pollingInterval: 3000, // Poll every 3 seconds
-      skip: !receiptId, // Don't query if no ID
+      pollingInterval: 3000,
+      skip: !receiptId,
     })
 
     const receipt = data?.data?.receipt || data?.receipt
 
-    // ✅ Show completion status
     useEffect(() => {
       if (receipt && receipt.processed && receipt.ocrProcessed) {
+        const amount = new Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+          minimumFractionDigits: 0,
+        }).format(receipt.amount || 0)
+
         toast.success(
-          `✅ OCR Complete: ${receipt.merchant || fileName} - $${receipt.amount || '0.00'}`,
+          `✅ OCR Complete: ${receipt.merchant || fileName} - ${amount}`,
           { duration: 4000, id: `ocr-${receiptId}` }
         )
         
@@ -143,7 +140,6 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
           return prev
         })
         
-        // ✅ Remove from tracking after completion
         setTimeout(() => {
           setUploadedReceiptIds(prev => prev.filter(r => r.id !== receiptId))
         }, 5000)
@@ -160,30 +156,36 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
 
     if (!receipt) {
       return (
-        <div className="flex items-center gap-3 p-3 rounded-lg border-2 bg-blue-50 border-blue-200">
-          <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+        <div className="flex items-center gap-3 p-4 rounded-xl border-2 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+          <Loader2 className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-blue-600">{fileName}</p>
-            <p className="text-xs text-blue-600 opacity-80">Uploading...</p>
+            <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">{fileName}</p>
+            <p className="text-xs text-blue-600 dark:text-blue-400">Uploading...</p>
           </div>
         </div>
       )
     }
 
     if (receipt.processed && receipt.ocrProcessed) {
+      const amount = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 0,
+      }).format(receipt.amount || 0)
+
       return (
-        <div className="flex items-center gap-3 p-3 rounded-lg border-2 bg-green-50 border-green-200">
-          <CheckCircle className="w-5 h-5 text-green-600" />
+        <div className="flex items-center gap-3 p-4 rounded-xl border-2 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
+          <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-green-600">{fileName}</p>
-            <p className="text-xs text-green-600 opacity-80">
-              ✓ {receipt.merchant || 'Receipt'} - ${receipt.amount || '0.00'}
+            <p className="text-sm font-semibold text-green-700 dark:text-green-300">{fileName}</p>
+            <p className="text-xs text-green-600 dark:text-green-400">
+              ✓ {receipt.merchant || 'Receipt'} - {amount}
             </p>
           </div>
           {receipt.category && (
-            <div className="flex items-center gap-2 text-xs text-gray-600">
-              <Store className="w-3 h-3" />
-              <span>{receipt.category}</span>
+            <div className="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-800/30 rounded-lg">
+              <Store className="w-3 h-3 text-green-700 dark:text-green-300" />
+              <span className="text-xs font-medium text-green-700 dark:text-green-300">{receipt.category}</span>
             </div>
           )}
         </div>
@@ -192,22 +194,22 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
 
     if (receipt.ocrError) {
       return (
-        <div className="flex items-center gap-3 p-3 rounded-lg border-2 bg-red-50 border-red-200">
-          <AlertCircle className="w-5 h-5 text-red-600" />
+        <div className="flex items-center gap-3 p-4 rounded-xl border-2 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+          <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-red-600">{fileName}</p>
-            <p className="text-xs text-red-600 opacity-80">OCR failed - manual entry needed</p>
+            <p className="text-sm font-semibold text-red-700 dark:text-red-300">{fileName}</p>
+            <p className="text-xs text-red-600 dark:text-red-400">OCR failed - manual entry needed</p>
           </div>
         </div>
       )
     }
 
     return (
-      <div className="flex items-center gap-3 p-3 rounded-lg border-2 bg-blue-50 border-blue-200">
-        <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+      <div className="flex items-center gap-3 p-4 rounded-xl border-2 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+        <Loader2 className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-blue-600">{fileName}</p>
-          <p className="text-xs text-blue-600 opacity-80">Processing OCR...</p>
+          <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">{fileName}</p>
+          <p className="text-xs text-blue-600 dark:text-blue-400">Processing OCR...</p>
         </div>
       </div>
     )
@@ -221,199 +223,205 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+    }).format(amount || 0)
+  }
+
   return (
-    <Card>
-      <Card.Header>
-        <Card.Title className="flex items-center space-x-2">
-          <Upload className="w-5 h-5" />
-          <span>Upload Receipts</span>
-          {uploadedReceiptIds.length > 0 && (
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <Upload className="w-6 h-6 text-emerald-600" />
+            Upload Receipts
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Automatic OCR processing and transaction creation
+          </p>
+        </div>
+        {uploadedReceiptIds.length > 0 && (
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+            <Loader2 className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-spin" />
+            <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
               {uploadedReceiptIds.length} processing
             </span>
-          )}
-        </Card.Title>
-      </Card.Header>
-      
-      <Card.Content className="space-y-6">
-        {/* Upload Zone */}
-        <div
-          className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-            dragActive 
-              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-              : 'border-gray-300 dark:border-gray-600 hover:border-primary-400'
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept="image/*,.pdf"
-            onChange={handleFileInput}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
+          </div>
+        )}
+      </div>
+
+      {/* Upload Zone */}
+      <div
+        className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-200 ${
+          dragActive 
+            ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 scale-[1.02]' 
+            : 'border-gray-300 dark:border-gray-600 hover:border-emerald-400 dark:hover:border-emerald-600'
+        }`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept="image/*,.pdf"
+          onChange={handleFileInput}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+        
+        <div className="space-y-4">
+          <div className="flex justify-center">
+            <div className="p-5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg">
+              <Upload className="w-10 h-10 text-white" />
+            </div>
+          </div>
           
-          <div className="space-y-4">
-            <div className="flex justify-center">
-              <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
-                <Upload className="w-8 h-8 text-gray-600 dark:text-gray-400" />
-              </div>
-            </div>
+          <div>
+            <p className="text-xl font-bold text-gray-900 dark:text-white">
+              Drop receipts here or click to browse
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Supports JPG, PNG, PDF files up to 10MB
+            </p>
+            <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mt-3">
+              🎯 Free OCR • Auto-categorization • Instant transactions
+            </p>
+          </div>
+          
+          <div className="flex justify-center gap-3 pt-2">
+            <button
+              onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}
+              className="flex items-center px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Browse Files
+            </button>
             
-            <div>
-              <p className="text-lg font-medium text-gray-900 dark:text-white">
-                Drop receipts here or click to browse
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Supports JPG, PNG, PDF files up to 10MB
-              </p>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                🎯 Free OCR processing • Auto-categorization • Transaction creation
-              </p>
-            </div>
-            
-            <div className="flex justify-center space-x-4">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                Browse Files
-              </Button>
-              
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  if (fileInputRef.current) {
-                    fileInputRef.current.setAttribute('capture', 'environment')
-                    fileInputRef.current.click()
-                  }
-                }}
-              >
-                <Camera className="w-4 h-4 mr-2" />
-                Take Photo
-              </Button>
-            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                if (fileInputRef.current) {
+                  fileInputRef.current.setAttribute('capture', 'environment')
+                  fileInputRef.current.click()
+                }
+              }}
+              className="flex items-center px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <Camera className="w-4 h-4 mr-2" />
+              Take Photo
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* ✅ OCR Status Display - Using RTK Query polling */}
-        {uploadedReceiptIds.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              OCR Processing Status
-            </h4>
-            
-            <div className="space-y-2">
-              {uploadedReceiptIds.map((receipt) => (
-                <OCRStatusTracker 
-                  key={receipt.id} 
-                  receiptId={receipt.id} 
-                  fileName={receipt.fileName} 
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* File Previews */}
-        {previewFiles.length > 0 && (
-          <div className="space-y-4">
-            <h4 className="font-medium text-gray-900 dark:text-white">
-              Files to Upload ({previewFiles.length})
-            </h4>
-            
-            <div className="space-y-2">
-              {previewFiles.map((fileObj) => (
-                <div
-                  key={fileObj.id}
-                  className="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                >
-                  <div className="flex-shrink-0">
-                    {fileObj.preview ? (
-                      <img
-                        src={fileObj.preview}
-                        alt="Preview"
-                        className="w-12 h-12 object-cover rounded-md"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-md flex items-center justify-center">
-                        <FileText className="w-6 h-6 text-red-600" />
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                      {fileObj.name}
-                    </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {formatFileSize(fileObj.size)}
-                    </p>
-                  </div>
-                  
-                  <button
-                    onClick={() => removeFile(fileObj.id)}
-                    className="flex-shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-            
-            <Button
-              onClick={uploadFiles}
-              loading={isLoading}
-              className="w-full"
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              Upload & Process OCR
-            </Button>
-          </div>
-        )}
-
-        {/* Upload Progress */}
-        {isLoading && (
+      {/* OCR Status Display */}
+      {uploadedReceiptIds.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Clock className="w-5 h-5 text-emerald-600" />
+            OCR Processing Status
+          </h4>
+          
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600 dark:text-gray-400">Uploading...</span>
-              <span className="text-gray-600 dark:text-gray-400">{uploadProgress}%</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div
-                className="bg-primary-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${uploadProgress}%` }}
+            {uploadedReceiptIds.map((receipt) => (
+              <OCRStatusTracker 
+                key={receipt.id} 
+                receiptId={receipt.id} 
+                fileName={receipt.fileName} 
               />
-            </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Recently Processed Receipts Summary */}
-        {processedReceipts.length > 0 && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <h4 className="font-medium text-green-800 mb-2 flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
-              Recently Processed ({processedReceipts.length})
-            </h4>
-            <div className="space-y-1">
-              {processedReceipts.slice(-3).map((receipt) => (
-                <div key={receipt._id} className="text-sm text-green-700 flex items-center justify-between">
-                  <span>{receipt.merchant || 'Receipt'}</span>
-                  <span className="font-medium">${receipt.amount || '0.00'}</span>
+      {/* File Previews */}
+      {previewFiles.length > 0 && (
+        <div className="space-y-4">
+          <h4 className="font-semibold text-gray-900 dark:text-white">
+            Files to Upload ({previewFiles.length})
+          </h4>
+          
+          <div className="space-y-2">
+            {previewFiles.map((fileObj) => (
+              <div
+                key={fileObj.id}
+                className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600"
+              >
+                <div className="flex-shrink-0">
+                  {fileObj.preview ? (
+                    <img
+                      src={fileObj.preview}
+                      alt="Preview"
+                      className="w-14 h-14 object-cover rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
+                      <FileText className="w-7 h-7 text-red-600 dark:text-red-400" />
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                    {fileObj.name}
+                  </p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {formatFileSize(fileObj.size)}
+                  </p>
+                </div>
+                
+                <button
+                  onClick={() => removeFile(fileObj.id)}
+                  className="flex-shrink-0 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
           </div>
-        )}
-      </Card.Content>
-    </Card>
+          
+          <button
+            onClick={uploadFiles}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            ) : (
+              <Upload className="w-5 h-5 mr-2" />
+            )}
+            {isLoading ? 'Uploading...' : 'Upload & Process OCR'}
+          </button>
+        </div>
+      )}
+
+      {/* Recently Processed Summary */}
+      {processedReceipts.length > 0 && (
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+          <h4 className="font-semibold text-green-800 dark:text-green-300 mb-3 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5" />
+            Recently Processed ({processedReceipts.length})
+          </h4>
+          <div className="space-y-2">
+            {processedReceipts.slice(-3).map((receipt) => (
+              <div key={receipt._id} className="flex items-center justify-between text-sm">
+                <span className="text-green-700 dark:text-green-300 font-medium">
+                  {receipt.merchant || 'Receipt'}
+                </span>
+                <span className="text-green-800 dark:text-green-200 font-bold">
+                  {formatCurrency(receipt.amount)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

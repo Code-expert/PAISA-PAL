@@ -1,60 +1,45 @@
 import React from 'react'
 import clsx from 'clsx'
 
-const Progress = ({ 
+export default function Progress({ 
   value = 0, 
-  max = 100, 
+  variant = 'primary', 
   size = 'md',
-  variant = 'primary',
-  showLabel = false,
-  label,
-  className = '' 
-}) => {
-  const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
-
-  const sizes = {
-    sm: 'h-1',
-    md: 'h-2',
-    lg: 'h-3',
+  className = '',
+  showLabel = false
+}) {
+  const sizeClasses = {
+    sm: 'h-1.5',
+    md: 'h-2.5',
+    lg: 'h-3'
   }
 
-  const variants = {
-    primary: 'bg-primary-600',
-    success: 'bg-green-600',
-    warning: 'bg-yellow-600',
-    error: 'bg-red-600',
+  const variantClasses = {
+    primary: 'bg-gradient-to-r from-emerald-500 to-teal-600',
+    success: 'bg-gradient-to-r from-green-500 to-emerald-600',
+    warning: 'bg-gradient-to-r from-yellow-500 to-orange-500',
+    error: 'bg-gradient-to-r from-red-500 to-pink-600'
   }
 
   return (
-    <div className="w-full">
-      {(showLabel || label) && (
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {label}
-          </span>
-          {showLabel && (
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {Math.round(percentage)}%
-            </span>
-          )}
-        </div>
-      )}
-      
+    <div className={clsx('w-full', className)}>
       <div className={clsx(
         'w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden',
-        sizes[size],
-        className
+        sizeClasses[size]
       )}>
-        <div
+        <div 
           className={clsx(
-            'h-full transition-all duration-300 ease-in-out rounded-full',
-            variants[variant]
+            'h-full rounded-full transition-all duration-500 ease-out',
+            variantClasses[variant]
           )}
-          style={{ width: `${percentage}%` }}
+          style={{ width: `${Math.min(Math.max(value, 0), 100)}%` }}
         />
       </div>
+      {showLabel && (
+        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+          {value.toFixed(0)}%
+        </p>
+      )}
     </div>
   )
 }
-
-export default Progress
