@@ -57,7 +57,7 @@ export default function TransactionChart({ transactions = [], period = '7d' }) {
                 Income
               </span>
               <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                {formatCurrency(payload[1]?.value || 0)}
+                {formatCurrency(payload[0]?.value || 0)}
               </span>
             </div>
             <div className="flex items-center justify-between space-x-4">
@@ -66,7 +66,7 @@ export default function TransactionChart({ transactions = [], period = '7d' }) {
                 Expenses
               </span>
               <span className="text-sm font-bold text-red-600 dark:text-red-400">
-                {formatCurrency(payload[0]?.value || 0)}
+                {formatCurrency(payload[1]?.value || 0)}
               </span>
             </div>
           </div>

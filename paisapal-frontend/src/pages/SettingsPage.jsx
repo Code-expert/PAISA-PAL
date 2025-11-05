@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import Select from '../components/ui/Select'
+import NotificationButton from '../components/notifications/NotificationButton' // ✅ ADD THIS
 
 const CURRENCIES = [
   { value: 'USD', label: '🇺🇸 US Dollar (USD)' },
@@ -52,7 +53,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Settings
@@ -61,6 +62,93 @@ export default function SettingsPage() {
           Customize your PaisaPal experience
         </p>
       </div>
+
+      {/* ✅ NEW: Notifications Settings */}
+      <Card>
+        <Card.Header>
+          <Card.Title className="flex items-center">
+            <Bell className="w-5 h-5 mr-2 text-emerald-600" />
+            Notifications
+          </Card.Title>
+        </Card.Header>
+        <Card.Content>
+          <div className="space-y-4">
+            {/* Push Notifications */}
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h4 className="font-medium text-gray-900 dark:text-white">
+                  Push Notifications
+                </h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Get real-time alerts for budgets, bills, and transactions even when the app is closed
+                </p>
+                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>Budget alerts when you approach limits</li>
+                    <li>Bill reminders before due dates</li>
+                    <li>Transaction confirmations</li>
+                    <li>Goal achievement notifications</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="ml-4">
+                {/* ✅ ADD NOTIFICATION BUTTON HERE */}
+                <NotificationButton />
+              </div>
+            </div>
+
+            {/* Notification Preferences - Only show if permission granted */}
+            {Notification.permission === 'granted' && (
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+                  Notification Preferences
+                </h5>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      Budget Alerts
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-600"></div>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      Bill Reminders
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-600"></div>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      Transaction Updates
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-600"></div>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      Goal Achievements
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-600"></div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card.Content>
+      </Card>
 
       {/* Appearance */}
       <Card>

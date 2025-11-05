@@ -30,6 +30,7 @@ import GoogleCallback from './components/auth/GoogleCallback'
 import NotFoundPage from './pages/error/NotFoundPage'
 import BillsPage from './pages/BillsPage'
 
+
 function AppContent() {
   const darkMode = useSelector(selectDarkMode)
 
@@ -43,6 +44,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      {/* <div className="p-4">
+        <NotificationButton/>
+      </div> */}
       <Router>
         <ErrorBoundary>
           <Routes>

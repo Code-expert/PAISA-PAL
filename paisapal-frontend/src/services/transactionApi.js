@@ -15,10 +15,9 @@ const baseQuery = fetchBaseQuery({
 export const transactionApi = createApi({
   reducerPath: 'transactionApi',
   baseQuery,
-  tagTypes: ['Transaction', 'Budget'], // ✅ ADDED 'Budget' tag
+  tagTypes: ['Transaction', 'Budget'],
   endpoints: (builder) => ({
     
-    // Get Transactions with filters and pagination
     getTransactions: builder.query({
       query: ({ 
         page = 1, 
@@ -60,72 +59,38 @@ export const transactionApi = createApi({
         { type: 'Transaction', id: 'LIST' },
         { type: 'Budget', id: 'LIST' }, 
       ],
-      
-      // Optimistic update for transactions
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        const patchResult = dispatch(
-          transactionApi.util.updateQueryData('getTransactions', {}, (draft) => {
-            if (draft?.transactions) {
-              draft.transactions.unshift({ 
-                ...arg, 
-                _id: 'temp-' + Date.now(),
-                createdAt: new Date().toISOString()
-              })
-            }
-          })
-        )
-        try {
-          await queryFulfilled
-        } catch {
-          patchResult.undo()
-        }
-      },
+      // ✅ REMOVED optimistic update - let tag invalidation handle it
+      // Optimistic updates with complex cache keys are error-prone
     }),
     
-    // ✅ MODIFIED: Update Transaction - now invalidates Budget tag
     updateTransaction: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `/${id}`,
         method: 'PUT',
         body: data,
       }),
-      // ✅ FIXED: Invalidate both Transaction and Budget tags
       invalidatesTags: (result, error, { id }) => [
         { type: 'Transaction', id },
-        { type: 'Budget', id: 'LIST' }, // ✅ This refreshes budgets!
+        { type: 'Transaction', id: 'LIST' },
+        { type: 'Budget', id: 'LIST' },
       ],
     }),
     
-    // ✅ MODIFIED: Delete Transaction - now invalidates Budget tag
     deleteTransaction: builder.mutation({
       query: (id) => ({
         url: `/${id}`,
         method: 'DELETE',
       }),
-      // ✅ FIXED: Invalidate both Transaction and Budget tags
-      invalidatesTags: [
+      invalidatesTags: (result, error, id) => [
+        { type: 'Transaction', id },
         { type: 'Transaction', id: 'LIST' },
-        { type: 'Budget', id: 'LIST' }, // ✅ This refreshes budgets!
+        { type: 'Budget', id: 'LIST' },
       ],
-      
-      // Optimistic delete
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
-        const patchResult = dispatch(
-          transactionApi.util.updateQueryData('getTransactions', {}, (draft) => {
-            if (draft?.transactions) {
-              draft.transactions = draft.transactions.filter(t => t._id !== id)
-            }
-          })
-        )
-        try {
-          await queryFulfilled
-        } catch {
-          patchResult.undo()
-        }
-      },
+      // ✅ REMOVED optimistic update - let tag invalidation handle it
     }),
   }),
 })
+
 
 export const {
   useGetTransactionsQuery,

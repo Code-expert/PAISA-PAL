@@ -51,7 +51,7 @@ const router = express.Router()
 
 router.post('/upload', auth, upload.single('receipt'), uploadReceipt)
 router.get('/', auth, getReceipts)
-router.get('/:id', auth, getReceiptStatus)  // ← ADD THIS MISSING ROUTE
+router.get('/:id', auth, getReceiptStatus) 
 router.delete('/:id', auth, deleteReceipt)
 router.post('/:id/process', auth, processReceiptOCR)
 router.get('/:id', auth, getReceiptStatus)

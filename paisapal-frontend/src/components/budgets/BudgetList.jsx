@@ -13,7 +13,7 @@ import Badge from '../ui/Badge'
 function BudgetCard({ budget, onEdit, onDelete }) {
   const [showMenu, setShowMenu] = useState(false)
   
-  const spent = budget.actual ?? 0  
+  const spent = budget.spent ?? 0  
   const amount = budget.amount ?? 0
   const alertThreshold = budget.alertThreshold ?? 80
   
@@ -156,7 +156,9 @@ export default function BudgetList({ onEdit, onCreate }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [budgetToDelete, setBudgetToDelete] = useState(null)
 
-  const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery()
+const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(undefined, {
+  refetchOnMountOrArgChange: true, // ✅ Force refetch when component mounts
+})
   const [deleteBudget, { isLoading: isDeleting }] = useDeleteBudgetMutation()
 
   const budgets = budgetsData?.budgets || []
@@ -166,7 +168,7 @@ export default function BudgetList({ onEdit, onCreate }) {
     if (filters.period && budget.period !== filters.period) return false
     
     if (filters.status) {
-      const percentage = budget.amount > 0 ? (budget.actual / budget.amount) * 100 : 0
+      const percentage = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0
       
       if (filters.status === 'over' && percentage <= 100) return false
       if (filters.status === 'warning' && (percentage < budget.alertThreshold || percentage > 100)) return false
@@ -284,7 +286,7 @@ export default function BudgetList({ onEdit, onCreate }) {
               On Track
             </h3>
             <p className="text-3xl font-bold text-green-600 dark:text-green-400">
-              {budgets.filter(b => (b.actual / b.amount * 100) < b.alertThreshold).length}
+              {budgets.filter(b => (b.spent / b.amount * 100) < b.alertThreshold).length}
             </p>
           </div>
           
@@ -293,7 +295,7 @@ export default function BudgetList({ onEdit, onCreate }) {
               Over Budget
             </h3>
             <p className="text-3xl font-bold text-red-600 dark:text-red-400">
-              {budgets.filter(b => (b.actual / b.amount * 100) > 100).length}
+              {budgets.filter(b => (b.spent / b.amount * 100) > 100).length}
             </p>
           </div>
         </div>
@@ -324,7 +326,7 @@ export default function BudgetList({ onEdit, onCreate }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBudgets.map((budget, index) => (
             <div
-              key={budget._id}
+              key={`${budget._id}-${index}`}
               className="animate-in slide-in-from-bottom duration-300"
               style={{ animationDelay: `${index * 100}ms` }}
             >

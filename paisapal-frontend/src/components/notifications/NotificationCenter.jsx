@@ -129,7 +129,7 @@ function NotificationItem({ notification, onMarkAsRead, onDelete }) {
                   }}
                   className="p-1"
                 >
-                  <Settings className="w-4 h-4" />
+                  {/* <Settings className="w-4 h-4" /> */}
                 </Button>
               </div>
             </div>
@@ -247,7 +247,7 @@ export default function NotificationCenter() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center space-x-3">
           <Bell className="w-6 h-6 text-gray-600 dark:text-gray-400" />
           <div>
@@ -279,7 +279,7 @@ export default function NotificationCenter() {
             Settings
           </Button>
         </div>
-      </div>
+      </div> */}
 
       {/* Filter Tabs */}
       <Card>

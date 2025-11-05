@@ -22,6 +22,8 @@ export const budgetApi = createApi({
       providesTags: [{ type: 'Budget', id: 'LIST' }],
       refetchOnFocus: true,
       refetchOnReconnect: true,
+      keepUnusedDataFor: 0,
+      refetchOnMountOrArgChange: 30,
     }),
    
     createBudget: builder.mutation({

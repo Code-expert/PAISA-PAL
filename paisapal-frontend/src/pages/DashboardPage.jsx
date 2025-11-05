@@ -15,10 +15,12 @@ import QuickActions from '../components/dashboard/QuickActions'
 import MonthlyOverview from '../components/dashboard/MonthlyOverview'
 import CategoryBreakdown from '../components/dashboard/CategoryBreakdown'
 import FinancialGoals from '../components/dashboard/FinancialGoals'
+import FinancialSummary from '../components/dashboard/FinancialGoals' 
 import Badge from '../components/ui/Badge'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import EmptyState from '../components/common/EmptyState'
 import { Link } from 'react-router-dom'
+
 
 export default function DashboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('30d')
@@ -125,6 +127,7 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
+      
 
       {/* Quick Stats */}
       <QuickStats summary={financialMetrics} />
