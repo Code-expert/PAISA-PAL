@@ -7,8 +7,7 @@ import {
 } from '../services/notificationApi'
 import { toast } from 'react-hot-toast'
 import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import Badge from '../components/ui/Badge'
+
 import NotificationCenter from '../components/notifications/NotificationCenter'
 
 export default function NotificationsPage() {
@@ -84,35 +83,7 @@ export default function NotificationsPage() {
         </div>
       </div>
 
-      {/* Quick Actions Card */}
-      {/* <Card>
-        <Card.Content className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <SettingsIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                  Notification Preferences
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Manage your notification settings and preferences
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => navigate('/settings')}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
-            >
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Go to Settings
-              </span>
-              <ArrowRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            </button>
-          </div>
-        </Card.Content>
-      </Card> */}
+
 
       {/* Notification Center Component */}
       <NotificationCenter />
