@@ -7,10 +7,30 @@ import sendPush from '../utils/sendPush.js';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// ✅ ADD: Retry logic with exponential backoff
+async function generateWithRetry(model, prompt, maxRetries = 3) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const result = await model.generateContent(prompt);
+      return result;
+    } catch (error) {
+      const is429 = error.message?.includes('429') || error.message?.includes('quota');
+      
+      if (is429 && attempt < maxRetries - 1) {
+        const delay = 3000 * Math.pow(2, attempt); // 3s, 6s, 12s
+        console.log(`Rate limited. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+
 export const chatWithAI = catchAsync(async (req, res) => {
   const { message, context } = req.body;
   
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
   
   const prompt = `
     You are a helpful financial assistant for PaisaPal app.
@@ -21,7 +41,8 @@ export const chatWithAI = catchAsync(async (req, res) => {
     Keep responses concise but informative.
   `;
   
-  const result = await model.generateContent(prompt);
+  // ✅ CHANGED: Use retry logic
+  const result = await generateWithRetry(model, prompt);
   const response = await result.response;
   const aiReply = response.text();
 
@@ -44,15 +65,13 @@ export const chatWithAI = catchAsync(async (req, res) => {
   });
 });
 
-// ✅ ADD: Get AI Insights (Frontend expects this at GET /api/ai/insights)
 export const getAIInsights = catchAsync(async (req, res) => {
   const userId = req.user.id;
   
-  // Get user's financial data
   const transactions = await Transaction.find({ user: userId }).limit(50);
   const budgets = await Budget.find({ user: userId });
   
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
   
   const prompt = `
     Analyze this financial data and provide 3-5 actionable insights:
@@ -80,13 +99,14 @@ export const getAIInsights = catchAsync(async (req, res) => {
   `;
 
   try {
-    const result = await model.generateContent(prompt);
+    // ✅ CHANGED: Use retry logic
+    const result = await generateWithRetry(model, prompt);
     const response = await result.response;
     const aiResponse = JSON.parse(response.text());
     
     res.json(aiResponse);
   } catch (error) {
-    // Fallback if JSON parsing fails
+    console.error('AI Insights Error:', error);
     res.json({
       insights: [
         {
@@ -104,14 +124,13 @@ export const getAIInsights = catchAsync(async (req, res) => {
   }
 });
 
-// ✅ ADD: Get Personalized Tips (Frontend expects this at GET /api/ai/tips)
 export const getPersonalizedTips = catchAsync(async (req, res) => {
   const userId = req.user.id;
   
   const transactions = await Transaction.find({ user: userId }).limit(30);
   const budgets = await Budget.find({ user: userId });
   
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
   
   const prompt = `
     Based on this financial data, provide 5 personalized money-saving tips:
@@ -132,13 +151,14 @@ export const getPersonalizedTips = catchAsync(async (req, res) => {
   `;
 
   try {
-    const result = await model.generateContent(prompt);
+    // ✅ CHANGED: Use retry logic
+    const result = await generateWithRetry(model, prompt);
     const response = await result.response;
     const tips = JSON.parse(response.text());
     
     res.json(tips);
   } catch (error) {
-    // Fallback tips
+    console.error('AI Tips Error:', error);
     res.json({
       tips: [
         {
@@ -156,13 +176,12 @@ export const getPersonalizedTips = catchAsync(async (req, res) => {
   }
 });
 
-// ✅ ADD: Get Predictions (Frontend expects this at POST /api/ai/predictions)
 export const getPredictions = catchAsync(async (req, res) => {
   const userId = req.user.id;
   
   const transactions = await Transaction.find({ user: userId }).limit(100);
   
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
   
   const prompt = `
     Analyze spending patterns and predict next month's expenses:
@@ -186,13 +205,14 @@ export const getPredictions = catchAsync(async (req, res) => {
   `;
 
   try {
-    const result = await model.generateContent(prompt);
+    // ✅ CHANGED: Use retry logic
+    const result = await generateWithRetry(model, prompt);
     const response = await result.response;
     const predictions = JSON.parse(response.text());
     
     res.json(predictions);
   } catch (error) {
-    // Fallback predictions
+    console.error('AI Predictions Error:', error);
     res.json({
       predictions: {
         spending_forecast: [
