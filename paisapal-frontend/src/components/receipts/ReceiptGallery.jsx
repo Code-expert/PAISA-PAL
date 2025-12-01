@@ -17,7 +17,8 @@ export default function ReceiptGallery() {
     limit: 100,
   })
   
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+  // ✅ FIX: Remove trailing slash
+  const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '')
 
   const [deleteReceipt] = useDeleteReceiptMutation()
 
@@ -27,10 +28,25 @@ export default function ReceiptGallery() {
     refetch()
   }, [refetch])
 
+  // ✅ FIX: Helper function to get correct image URL
+  const getImageUrl = (fileUrl) => {
+    if (!fileUrl) return ''
+    if (fileUrl.startsWith('http')) return fileUrl
+    
+    // Remove /api/ prefix if present and ensure leading slash
+    const cleanUrl = fileUrl.replace('/api/uploads', '/uploads')
+    return `${API_BASE_URL}${cleanUrl.startsWith('/') ? cleanUrl : '/' + cleanUrl}`
+  }
+
+  // ✅ FIX: Case-insensitive filter
   const filteredReceipts = receipts.filter(receipt => {
     const matchesSearch = receipt.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      receipt.extractedText?.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || receipt.category === selectedCategory
+      receipt.extractedText?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      receipt.merchant?.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesCategory = selectedCategory === 'all' || 
+      receipt.category?.toLowerCase() === selectedCategory.toLowerCase()
+    
     return matchesSearch && matchesCategory
   })
 
@@ -47,14 +63,16 @@ export default function ReceiptGallery() {
         refetch()
       } catch (error) {
         toast.error('Failed to delete receipt')
+        console.error('Delete error:', error)
       }
     }
   }
 
   const handleDownloadReceipt = (receipt) => {
     const link = document.createElement('a')
-    link.href = `${API_BASE_URL}${receipt.fileUrl}`
+    link.href = getImageUrl(receipt.fileUrl)
     link.download = receipt.filename
+    link.target = '_blank'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -69,7 +87,7 @@ export default function ReceiptGallery() {
     }).format(amount)
   }
 
-  const categories = ['all', 'food', 'transport', 'shopping', 'utilities', 'healthcare', 'other']
+  const categories = ['all', 'food', 'transport', 'shopping', 'utilities', 'healthcare', 'entertainment', 'other']
 
   if (isLoading) {
     return (
@@ -94,7 +112,7 @@ export default function ReceiptGallery() {
               Receipt Gallery
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {receipts.length} receipt{receipts.length !== 1 ? 's' : ''} stored
+              {filteredReceipts.length} of {receipts.length} receipt{receipts.length !== 1 ? 's' : ''}
             </p>
           </div>
 
@@ -163,25 +181,27 @@ export default function ReceiptGallery() {
                 <div className="aspect-[3/4] bg-white dark:bg-gray-800 relative overflow-hidden">
                   {receipt.fileType?.startsWith('image/') ? (
                     <img
-                      src={`${API_BASE_URL}${receipt.fileUrl}`}
+                      src={getImageUrl(receipt.fileUrl)}
                       alt={receipt.filename}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
+                        console.error('Image failed to load:', receipt.fileUrl)
                         if (!e.target.dataset.fallback) {
                           e.target.dataset.fallback = 'true'
                           e.target.style.display = 'none'
                           const parent = e.target.parentElement
                           if (parent && !parent.querySelector('.fallback-icon')) {
-                            parent.innerHTML = `
-                              <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 fallback-icon">
-                                <div class="text-center">
-                                  <svg class="w-16 h-16 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                  </svg>
-                                  <p class="text-sm text-gray-500 mt-2">Image unavailable</p>
-                                </div>
+                            const fallbackDiv = document.createElement('div')
+                            fallbackDiv.className = 'w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 fallback-icon'
+                            fallbackDiv.innerHTML = `
+                              <div class="text-center">
+                                <svg class="w-16 h-16 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <p class="text-sm text-gray-500 mt-2">Image unavailable</p>
                               </div>
                             `
+                            parent.appendChild(fallbackDiv)
                           }
                         }
                       }}
@@ -197,8 +217,8 @@ export default function ReceiptGallery() {
                     </div>
                   )}
 
-                  {/* Overlay Actions */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 flex items-center justify-center">
+                  {/* ✅ FIX: Overlay Actions with z-index */}
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 flex items-center justify-center z-10">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2">
                       <button
                         onClick={() => handleViewReceipt(receipt)}
@@ -277,7 +297,7 @@ export default function ReceiptGallery() {
             <div className="flex justify-center bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
               {selectedReceipt.fileType?.startsWith('image/') ? (
                 <img
-                  src={`${API_BASE_URL}${selectedReceipt.fileUrl}`}
+                  src={getImageUrl(selectedReceipt.fileUrl)}
                   alt={selectedReceipt.filename}
                   className="max-w-full max-h-96 object-contain rounded-lg"
                 />
@@ -287,7 +307,7 @@ export default function ReceiptGallery() {
                     <FileText className="w-20 h-20 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 dark:text-gray-400 mb-4">PDF Document</p>
                     <button
-                      onClick={() => window.open(`${API_BASE_URL}${selectedReceipt.fileUrl}`, '_blank')}
+                      onClick={() => window.open(getImageUrl(selectedReceipt.fileUrl), '_blank')}
                       className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                     >
                       Open PDF
@@ -332,6 +352,15 @@ export default function ReceiptGallery() {
                     Category
                   </label>
                   <Badge variant="secondary">{selectedReceipt.category}</Badge>
+                </div>
+              )}
+
+              {selectedReceipt.merchant && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                    Merchant
+                  </label>
+                  <p className="text-sm text-gray-900 dark:text-white">{selectedReceipt.merchant}</p>
                 </div>
               )}
             </div>
