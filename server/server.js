@@ -83,7 +83,7 @@ app.use('/api/stripe', stripeRoutes);
 app.use('/api/finance', financialSummaryRoutes);
 app.use('/api/bills', billReminderRoutes);
 
-import errorHandler from './middleware/errorHandler.js';
+import errorHandler from './Middleware/errorHandler.js';
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
