@@ -1,6 +1,6 @@
 import Transaction from '../models/Transaction.js';
 import Budget from '../models/Budget.js';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 
 // ✅ Helper function to update budget spending
 async function updateBudgetSpending(userId, category, amount, operation = 'add') {
