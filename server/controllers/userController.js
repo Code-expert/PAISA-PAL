@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 
 export const getProfile = catchAsync(async (req, res) => {
   const user = await User.findById(req.user.id).select('-password');
