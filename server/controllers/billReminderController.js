@@ -1,5 +1,5 @@
 import BillReminder from '../models/BillReminder.js'
-import catchAsync from '../middleware/catchAsync.js'
+import catchAsync from '../Middleware/catchAsync.js'
 import sendPush from '../utils/sendPush.js'
 
 // Get all bill reminders

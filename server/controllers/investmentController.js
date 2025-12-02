@@ -1,5 +1,5 @@
 import Investment from '../models/Investment.js';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 import logger from '../utils/logger.js';
 
 export const getInvestments = catchAsync(async (req, res) => {

@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 import logger from '../utils/logger.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

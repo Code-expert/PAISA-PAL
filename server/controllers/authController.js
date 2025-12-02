@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 import sendEmail from '../utils/sendEmail.js';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 import { generateVerificationCode, generateCodeExpiry } from '../utils/generateVerificationToken.js';
 import { getVerificationEmailTemplate, getWelcomeEmailTemplate } from '../utils/emailTemplates.js';
 

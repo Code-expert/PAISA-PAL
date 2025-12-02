@@ -1,7 +1,7 @@
 import Receipt from '../models/Receipt.js'
 import Transaction from '../models/Transaction.js'
 import Budget from '../models/Budget.js'
-import catchAsync from '../middleware/catchAsync.js'
+import catchAsync from '../Middleware/catchAsync.js'
 import { extractTextFromImage, parseReceiptData } from '../services/tesseractOCR.js'
 import { cloudinary } from '../config/cloudinary.js'
 import axios from 'axios'

@@ -1,5 +1,5 @@
 import FcmToken from '../models/FcmToken.js';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 
 export const saveFcmToken = catchAsync(async (req, res) => {
   const { token } = req.body;

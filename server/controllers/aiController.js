@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import Insight from '../models/Insight.js';
 import Transaction from '../models/Transaction.js';
 import Budget from '../models/Budget.js';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 import sendPush from '../utils/sendPush.js';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);

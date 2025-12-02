@@ -1,6 +1,6 @@
 import Notification from '../models/Notification.js';
 import { validationResult } from 'express-validator';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 import pushNotification from '../utils/pushNotification.js';
 
 export const getNotifications = catchAsync(async (req, res) => {

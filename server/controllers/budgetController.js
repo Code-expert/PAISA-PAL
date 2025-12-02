@@ -1,6 +1,6 @@
 import Budget from '../models/Budget.js';
 import Transaction from '../models/Transaction.js';
-import catchAsync from '../middleware/catchAsync.js';
+import catchAsync from '../Middleware/catchAsync.js';
 import sendPush from '../utils/sendPush.js';
 import mongoose from 'mongoose';  // ✅ Import mongoose
 
