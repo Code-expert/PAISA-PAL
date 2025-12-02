@@ -2,8 +2,9 @@ import React from 'react'
 
 export default function GoogleLoginButton({ isSignUp = false, disabled = false }) {
   const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL || '/api'}/auth/google`
-  }
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+  window.location.href = `${API_URL}/api/auth/google`  
+}
 
   return (
     <button
