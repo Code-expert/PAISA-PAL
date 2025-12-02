@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/receipts`,
+  baseUrl: `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/receipts`,
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     let token = getState().auth?.token
@@ -61,7 +61,7 @@ export const receiptApi = createApi({
     // ✅ Upload receipt
     uploadReceipt: builder.mutation({
       query: (formData) => ({
-        url: '/upload',
+        url: '/uploads',
         method: 'POST',
         body: formData,
       }),
