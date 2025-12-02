@@ -56,7 +56,7 @@ export const extractTextFromImage = async (imagePath) => {
 
 export const parseWithGemini = async (ocrText) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     
     const prompt = `You are a receipt parser. Extract information from this OCR text.
 

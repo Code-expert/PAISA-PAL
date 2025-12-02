@@ -45,7 +45,7 @@ export default function QuickActions() {
       gradient: 'from-emerald-500 to-teal-600'
     },
     {
-      to: '/receipts/upload',
+      to: '/receipts/uploads',
       icon: Upload,
       title: 'Upload Receipt',
       description: 'Scan receipt with AI',

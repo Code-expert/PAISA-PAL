@@ -87,7 +87,7 @@ export default function ReceiptGallery() {
     }).format(amount)
   }
 
-  const categories = ['all', 'food', 'transport', 'shopping', 'utilities', 'healthcare', 'entertainment', 'other']
+  const categories = ['all', 'Food & Dining', 'transport', 'shopping', 'utilities', 'healthcare', 'entertainment', 'other']
 
   if (isLoading) {
     return (

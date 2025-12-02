@@ -2,7 +2,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import { getProfile, updateProfile, uploadAvatar } from '../controllers/userController.js';
 import auth from '../Middleware/authMiddleware.js';
-import { uploadSingle } from '../middleware/multerMiddleware.js';
+import { uploadSingle } from '../Middleware/multerMiddleware.js';
 
 const router = express.Router();
 

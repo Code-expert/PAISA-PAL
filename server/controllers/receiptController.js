@@ -1,11 +1,18 @@
-// backend/controllers/receiptController.js
 import Receipt from '../models/Receipt.js'
-import Transaction from '../models/Transaction.js' 
+import Transaction from '../models/Transaction.js'
 import Budget from '../models/Budget.js'
 import catchAsync from '../middleware/catchAsync.js'
-import { extractTextFromImage, parseReceiptData, validateImage } from '../services/tesseractOCR.js'
+import { extractTextFromImage, parseReceiptData } from '../services/tesseractOCR.js'
+import { cloudinary } from '../config/cloudinary.js'
+import axios from 'axios'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-// Upload and process receipt with FREE Tesseract OCR
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// ✅ Upload receipt to Cloudinary
 export const uploadReceipt = catchAsync(async (req, res) => {
   if (!req.file) {
     return res.status(400).json({
@@ -18,15 +25,16 @@ export const uploadReceipt = catchAsync(async (req, res) => {
   console.log('📁 File details:', {
     originalname: req.file.originalname,
     size: req.file.size,
-    mimetype: req.file.mimetype
+    mimetype: req.file.mimetype,
+    cloudinaryUrl: req.file.path // Cloudinary URL
   })
 
   // Create initial receipt record
   const receipt = await Receipt.create({
     user: req.user.id,
     filename: req.file.originalname,
-    fileUrl: `/uploads/receipts/${req.file.filename}`,
-    filePath: req.file.path,
+    fileUrl: req.file.path, // ✅ Cloudinary URL
+    cloudinaryId: req.file.filename, // ✅ Cloudinary public ID
     fileType: req.file.mimetype,
     fileSize: req.file.size,
     ocrProcessed: false,
@@ -35,7 +43,7 @@ export const uploadReceipt = catchAsync(async (req, res) => {
 
   console.log('✅ Receipt record created:', receipt._id)
 
-  // Process OCR in background (don't block response)
+  // Process OCR in background
   processReceiptOCR(receipt._id, req.user.id)
     .then(() => {
       console.log('🎉 Background OCR processing completed for:', receipt._id)
@@ -60,8 +68,10 @@ export const uploadReceipt = catchAsync(async (req, res) => {
   })
 })
 
-// Background OCR processing function
+// ✅ Updated OCR processing to download from Cloudinary
 export const processReceiptOCR = async (receiptId, userId) => {
+  let tempFilePath = null
+  
   try {
     console.log('🔄 Starting background OCR for receipt:', receiptId)
     
@@ -70,13 +80,32 @@ export const processReceiptOCR = async (receiptId, userId) => {
       throw new Error('Receipt not found')
     }
 
-    // Validate image before processing
-    validateImage(receipt.filePath)
+    // ✅ Download image from Cloudinary to temp folder for OCR
+    const tempDir = path.join(__dirname, '../temp')
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true })
+    }
+
+    tempFilePath = path.join(tempDir, `${receiptId}.jpg`)
     
-    // Extract text using Tesseract OCR (FREE!)
-    console.log('📝 Extracting text from:', receipt.filePath)
-    const extractedText = await extractTextFromImage(receipt.filePath)
-    
+    console.log('📥 Downloading image from Cloudinary:', receipt.fileUrl)
+    const response = await axios({
+      method: 'GET',
+      url: receipt.fileUrl,
+      responseType: 'stream'
+    })
+
+    const writer = fs.createWriteStream(tempFilePath)
+    response.data.pipe(writer)
+
+    await new Promise((resolve, reject) => {
+      writer.on('finish', resolve)
+      writer.on('error', reject)
+    })
+
+    console.log('📝 Extracting text from:', tempFilePath)
+    const extractedText = await extractTextFromImage(tempFilePath)
+
     // Parse receipt data
     const ocrData = await parseReceiptData(extractedText)
     
@@ -102,24 +131,29 @@ export const processReceiptOCR = async (receiptId, userId) => {
     // Auto-create transaction if amount is reasonable
     if (ocrData.amount > 0 && ocrData.amount < 10000) {
       const transaction = await createTransactionFromReceipt(ocrData, userId, receiptId)
-      
       if (transaction) {
-        // Link transaction to receipt
         await Receipt.findByIdAndUpdate(receiptId, {
           linkedTransaction: transaction._id
         })
-        
-        // Update budget
         await updateBudgetFromTransaction(transaction)
-        
         console.log('💰 Auto-created transaction:', transaction._id)
       }
+    }
+
+    // ✅ Clean up temp file
+    if (tempFilePath && fs.existsSync(tempFilePath)) {
+      fs.unlinkSync(tempFilePath)
+      console.log('🗑️ Cleaned up temp file')
     }
 
   } catch (error) {
     console.error('❌ OCR processing failed:', error)
     
-    // Update receipt with error
+    // Clean up temp file on error
+    if (tempFilePath && fs.existsSync(tempFilePath)) {
+      fs.unlinkSync(tempFilePath)
+    }
+
     await Receipt.findByIdAndUpdate(receiptId, {
       processed: false,
       ocrProcessed: false,
@@ -137,13 +171,11 @@ const createTransactionFromReceipt = async (ocrData, userId, receiptId) => {
       category: ocrData.category,
       type: 'expense',
       description: `${ocrData.merchant} - Auto-created from receipt`,
-      date: ocrData.date,
+      date: ocrData.date || new Date(),
       receiptId: receiptId,
       source: 'receipt_ocr'
     })
-
     return transaction
-    
   } catch (error) {
     console.error('❌ Failed to create transaction:', error)
     return null
@@ -167,13 +199,12 @@ const updateBudgetFromTransaction = async (transaction) => {
       await budget.save()
       console.log('📊 Updated budget for', transaction.category)
     }
-
   } catch (error) {
     console.error('❌ Failed to update budget:', error)
   }
 }
 
-// Get all receipts with OCR data
+// Get all receipts
 export const getReceipts = catchAsync(async (req, res) => {
   const { page = 1, limit = 20, category, processed } = req.query
 
@@ -200,7 +231,7 @@ export const getReceipts = catchAsync(async (req, res) => {
   })
 })
 
-// Get single receipt with details
+// Get single receipt
 export const getReceipt = catchAsync(async (req, res) => {
   const receipt = await Receipt.findOne({
     _id: req.params.id,
@@ -220,7 +251,7 @@ export const getReceipt = catchAsync(async (req, res) => {
   })
 })
 
-// Delete receipt and linked transaction
+// ✅ Delete receipt from both DB and Cloudinary
 export const deleteReceipt = catchAsync(async (req, res) => {
   const receipt = await Receipt.findOne({
     _id: req.params.id,
@@ -234,12 +265,22 @@ export const deleteReceipt = catchAsync(async (req, res) => {
     })
   }
 
+  // Delete from Cloudinary
+  if (receipt.cloudinaryId) {
+    try {
+      await cloudinary.uploader.destroy(receipt.cloudinaryId)
+      console.log('☁️ Deleted from Cloudinary:', receipt.cloudinaryId)
+    } catch (error) {
+      console.error('❌ Failed to delete from Cloudinary:', error)
+    }
+  }
+
   // Delete linked transaction if exists
   if (receipt.linkedTransaction) {
     await Transaction.findByIdAndDelete(receipt.linkedTransaction)
   }
 
-  // Delete receipt
+  // Delete receipt from DB
   await Receipt.findByIdAndDelete(req.params.id)
 
   res.status(200).json({
@@ -262,7 +303,6 @@ export const reprocessReceipt = catchAsync(async (req, res) => {
     })
   }
 
-  // Start reprocessing
   processReceiptOCR(receipt._id, req.user.id)
     .then(() => {
       console.log('🔄 Receipt reprocessing completed')
@@ -276,10 +316,8 @@ export const reprocessReceipt = catchAsync(async (req, res) => {
     message: 'Receipt reprocessing started'
   })
 })
-// Add this export function to your receiptController.js
 
-
-// Add this export function to your receiptController.js
+// Get receipt status
 export const getReceiptStatus = catchAsync(async (req, res) => {
   const receipt = await Receipt.findOne({
     _id: req.params.id,

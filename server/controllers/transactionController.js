@@ -58,7 +58,7 @@ async function updateBudgetSpending(userId, category, amount, operation = 'add')
 }
 
 export const getTransactions = catchAsync(async (req, res) => {
-  const { page = 1, limit = 10, category, type, startDate, endDate } = req.query;
+  const {  category, type, startDate, endDate } = req.query;
   
   const filter = { user: req.user.id };
   if (category) filter.category = category;
@@ -69,24 +69,16 @@ export const getTransactions = catchAsync(async (req, res) => {
     if (endDate) filter.date.$lte = new Date(endDate);
   }
   
-  const pageNum = Math.max(1, parseInt(page) || 1);
-  const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+  
   
   const transactions = await Transaction.find(filter)
     .sort({ date: -1 })
-    .skip((pageNum - 1) * limitNum)
-    .limit(limitNum);
-  const total = await Transaction.countDocuments(filter);
+    
   
   res.json({ 
     success: true, 
     transactions, 
-    pagination: {
-      currentPage: pageNum,
-      totalPages: Math.ceil(total / limitNum),
-      totalItems: total,
-      itemsPerPage: limitNum
-    }
+    total: transactions.length
   });
 });
 
