@@ -45,14 +45,14 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center space-x-3">
-          <div className="p-3 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl">
-            <Bell className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <div className="p-3 bg-secondary/10 rounded-xl">
+            <Bell className="w-6 h-6 text-secondary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-on-surface">
               Notifications
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className="text-on-surface-variant text-sm">
               {unreadCount > 0 
                 ? `${unreadCount} unread notification${unreadCount !== 1 ? 's' : ''}`
                 : 'All caught up! 🎉'

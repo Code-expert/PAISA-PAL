@@ -10,7 +10,7 @@ import LoadingSpinner from '../common/LoadingSpinner'
 import EmptyState from '../common/EmptyState'
 import Badge from '../ui/Badge'
 
-function BudgetCard({ budget, onEdit, onDelete }) {
+function BudgetCard({ budget, onEdit, onDelete, onCardClick }) {
   const [showMenu, setShowMenu] = useState(false)
   
   const spent = budget.spent ?? 0  
@@ -38,18 +38,21 @@ function BudgetCard({ budget, onEdit, onDelete }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
+    <div 
+      onClick={() => onCardClick && onCardClick(budget)}
+      className="bg-surface-container backdrop-blur-md border border-outline-variant/30 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer"
+    >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start space-x-3">
-          <div className={`p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600`}>
+          <div className={`p-3 rounded-xl bg-gradient-to-br from-primary to-secondary`}>
             <Target className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+            <h3 className="text-lg font-bold text-on-surface">
               {budget.name || budget.category}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">
+            <p className="text-sm text-on-surface-variant capitalize">
               {budget.period} budget
             </p>
           </div>
@@ -62,7 +65,7 @@ function BudgetCard({ budget, onEdit, onDelete }) {
           
           <div className="relative">
             <button
-              onClick={() => setShowMenu(!showMenu)}
+              onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
               className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <MoreVertical className="w-5 h-5 text-gray-400" />
@@ -72,18 +75,18 @@ function BudgetCard({ budget, onEdit, onDelete }) {
               <>
                 <div 
                   className="fixed inset-0 z-10" 
-                  onClick={() => setShowMenu(false)}
+                  onClick={(e) => { e.stopPropagation(); setShowMenu(false); }}
                 />
-                <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-20 border border-gray-200 dark:border-gray-700 py-1">
+                <div className="absolute right-0 mt-1 w-48 bg-surface-container backdrop-blur-md rounded-3xl shadow-xl z-20 border border-outline-variant/30 py-1">
                   <button
-                    onClick={() => { onEdit(budget); setShowMenu(false) }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); onEdit(budget); setShowMenu(false) }}
+                    className="flex items-center w-full px-4 py-2 text-sm text-on-surface hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     <Edit2 className="w-4 h-4 mr-2" />
                     Edit
                   </button>
                   <button
-                    onClick={() => { onDelete(budget); setShowMenu(false) }}
+                    onClick={(e) => { e.stopPropagation(); onDelete(budget); setShowMenu(false) }}
                     className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
@@ -98,17 +101,17 @@ function BudgetCard({ budget, onEdit, onDelete }) {
 
       {/* Progress Bar */}
       <div className="mb-4">
-        <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-2">
+        <div className="h-2 bg-outline-variant/50 rounded-full overflow-hidden mb-2">
           <div 
             className={`h-full transition-all duration-300 ${getStatusColor()}`}
             style={{ width: `${Math.min(percentage, 100)}%` }}
           />
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">
+          <span className="text-on-surface-variant">
             {formatCurrency(spent)} spent
           </span>
-          <span className="text-gray-900 dark:text-white font-semibold">
+          <span className="text-on-surface font-semibold">
             {formatCurrency(amount)} budget
           </span>
         </div>
@@ -136,14 +139,14 @@ function BudgetCard({ budget, onEdit, onDelete }) {
           </span>
         </div>
         
-        <span className="text-xs text-gray-500 dark:text-gray-400">
+        <span className="text-xs text-on-surface-variant">
           Alert at {alertThreshold}%
         </span>
       </div>
 
       {/* Description */}
       {budget.description && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <p className="text-sm text-on-surface-variant mt-4 pt-4 border-t border-outline-variant/30">
           {budget.description}
         </p>
       )}
@@ -151,7 +154,7 @@ function BudgetCard({ budget, onEdit, onDelete }) {
   )
 }
 
-export default function BudgetList({ onEdit, onCreate }) {
+export default function BudgetList({ onEdit, onCreate, onCardClick }) {
   const [filters, setFilters] = useState({ period: '', status: '' })
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [budgetToDelete, setBudgetToDelete] = useState(null)
@@ -217,7 +220,7 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
 
   if (error) {
     return (
-      <div className="text-center p-8 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
+      <div className="text-center p-8 bg-red-50 dark:bg-red-900/20 rounded-3xl border border-red-200 dark:border-red-800">
         <p className="text-red-600 dark:text-red-400 mb-4">Failed to load budgets. Please try again.</p>
         <button
           onClick={refetch}
@@ -235,14 +238,14 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
    
       {/* Filters */}
       {budgets.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <select
                 value={filters.period}
                 onChange={(e) => setFilters({ ...filters, period: e.target.value })}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-outline-variant/50 rounded-xl bg-white dark:bg-gray-700 text-on-surface focus:ring-2 focus:ring-secondary focus:border-secondary"
               >
                 <option value="">All Periods</option>
                 <option value="monthly">Monthly</option>
@@ -257,7 +260,7 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
               <select
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-outline-variant/50 rounded-xl bg-white dark:bg-gray-700 text-on-surface focus:ring-2 focus:ring-secondary focus:border-secondary"
               >
                 <option value="">All Status</option>
                 <option value="good">On Track</option>
@@ -272,17 +275,17 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
       {/* Budget Summary Stats */}
       {budgets.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all">
-            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+          <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all">
+            <h3 className="text-sm font-medium text-on-surface-variant mb-2">
               Total Budgets
             </h3>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+            <p className="text-3xl font-bold text-on-surface">
               {budgets.length}
             </p>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all">
-            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+          <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all">
+            <h3 className="text-sm font-medium text-on-surface-variant mb-2">
               On Track
             </h3>
             <p className="text-3xl font-bold text-green-600 dark:text-green-400">
@@ -290,8 +293,8 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
             </p>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all">
-            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+          <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all">
+            <h3 className="text-sm font-medium text-on-surface-variant mb-2">
               Over Budget
             </h3>
             <p className="text-3xl font-bold text-red-600 dark:text-red-400">
@@ -314,7 +317,7 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
             budgets.length === 0 && (
               <button
                 onClick={onCreate}
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all"
+                className="inline-flex items-center px-4 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 Create Budget
@@ -334,6 +337,7 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
                 budget={budget}
                 onEdit={onEdit}
                 onDelete={handleDeleteClick}
+                onCardClick={onCardClick}
               />
             </div>
           ))}
@@ -343,21 +347,21 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
       {/* Delete Modal */}
       <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Budget" size="sm">
         <div className="space-y-4">
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-on-surface-variant">
             Are you sure you want to delete this budget? This action cannot be undone.
           </p>
           
           {budgetToDelete && (
             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
+                <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-secondary">
                   <Target className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-white">
+                  <p className="font-semibold text-on-surface">
                     {budgetToDelete.name || budgetToDelete.category}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-on-surface-variant">
                     {formatCurrency(budgetToDelete.amount)}
                   </p>
                 </div>
@@ -368,7 +372,7 @@ const { data: budgetsData, isLoading, error, refetch } = useGetBudgetsQuery(unde
           <div className="flex space-x-3">
             <button
               onClick={() => setShowDeleteModal(false)}
-              className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              className="flex-1 px-4 py-2 bg-surface-container-highest text-on-surface font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               Cancel
             </button>

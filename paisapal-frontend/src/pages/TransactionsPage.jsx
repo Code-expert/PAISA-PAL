@@ -69,17 +69,17 @@ export default function TransactionsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tight">
             Transactions
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">
+          <p className="text-on-surface-variant mt-1 text-sm sm:text-base">
             Track and manage your income and expenses
           </p>
         </div>
 
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="flex items-center justify-center px-4 py-2.5 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Transaction
@@ -87,7 +87,7 @@ export default function TransactionsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
+      <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-4">
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search */}
           <div className="flex-1 relative">
@@ -97,7 +97,7 @@ export default function TransactionsPage() {
               placeholder="Search transactions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+              className="w-full pl-10 pr-4 py-2.5 border border-outline-variant/50 rounded-xl bg-white dark:bg-gray-700 text-on-surface placeholder-gray-400 focus:ring-2 focus:ring-secondary focus:border-secondary transition-all duration-200"
             />
           </div>
 
@@ -107,7 +107,7 @@ export default function TransactionsPage() {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="pl-10 pr-8 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none transition-all duration-200 min-w-[150px]"
+              className="pl-10 pr-8 py-2.5 border border-outline-variant/50 rounded-xl bg-white dark:bg-gray-700 text-on-surface focus:ring-2 focus:ring-secondary focus:border-secondary appearance-none transition-all duration-200 min-w-[150px]"
             >
               <option value="all">All Types</option>
               <option value="income">Income</option>
@@ -117,13 +117,13 @@ export default function TransactionsPage() {
           </div>
 
           {/* View Mode */}
-          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+          <div className="flex bg-surface-container-highest rounded-lg p-1">
             <button
               onClick={() => setViewMode('list')}
               className={`flex items-center px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 ${
                 viewMode === 'list'
-                  ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-secondary text-on-secondary text-secondary shadow-sm'
+                  : 'text-on-surface-variant hover:text-on-surface'
               }`}
             >
               <List className="w-4 h-4 mr-2" />
@@ -133,8 +133,8 @@ export default function TransactionsPage() {
               onClick={() => setViewMode('chart')}
               className={`flex items-center px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 ${
                 viewMode === 'chart'
-                  ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-secondary text-on-secondary text-secondary shadow-sm'
+                  : 'text-on-surface-variant hover:text-on-surface'
               }`}
             >
               <BarChart3 className="w-4 h-4 mr-2" />
@@ -146,19 +146,19 @@ export default function TransactionsPage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Transactions</h3>
-            <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-              <List className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <h3 className="text-sm font-medium text-on-surface-variant">Total Transactions</h3>
+            <div className="p-2 bg-surface-container-highest rounded-lg">
+              <List className="w-5 h-5 text-on-surface-variant" />
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white">{filteredTransactions.length}</p>
+          <p className="text-3xl font-bold text-on-surface">{filteredTransactions.length}</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Income</h3>
+            <h3 className="text-sm font-medium text-on-surface-variant">Total Income</h3>
             <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
               <Plus className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
@@ -168,9 +168,9 @@ export default function TransactionsPage() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Expenses</h3>
+            <h3 className="text-sm font-medium text-on-surface-variant">Total Expenses</h3>
             <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
               <BarChart3 className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
@@ -182,7 +182,7 @@ export default function TransactionsPage() {
       </div>
 
       {/* Main Content */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>

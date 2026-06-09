@@ -50,9 +50,9 @@ export default function PerformanceChart({ investments }) {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 border-2 border-emerald-500 rounded-xl shadow-xl">
-          <p className="font-bold text-gray-900 dark:text-white mb-1">{label}</p>
-          <p className="text-sm text-emerald-600 dark:text-emerald-400 font-semibold">
+        <div className="bg-surface-container backdrop-blur-md p-3 border-2 border-emerald-500 rounded-xl shadow-xl">
+          <p className="font-bold text-on-surface mb-1">{label}</p>
+          <p className="text-sm text-secondary font-semibold">
             Value: {formatCurrency(data.portfolioValue)}
           </p>
           <p className={`text-sm font-semibold ${data.gain >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -65,10 +65,10 @@ export default function PerformanceChart({ investments }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+    <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-emerald-600" />
+        <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-secondary" />
           Portfolio Performance
         </h3>
         <div className="flex gap-2">
@@ -78,8 +78,8 @@ export default function PerformanceChart({ investments }) {
               onClick={() => setTimeframe(period)}
               className={`px-3 py-1.5 rounded-lg font-semibold text-xs transition-all ${
                 timeframe === period
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  ? 'bg-primary text-on-primary shadow-md'
+                  : 'bg-surface-container-highest text-on-surface hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {period === '7d' ? '7D' : 
@@ -91,12 +91,12 @@ export default function PerformanceChart({ investments }) {
       </div>
 
       {performanceData.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-80 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
+        <div className="flex flex-col items-center justify-center h-80 bg-surface rounded-xl">
           <TrendingUp className="w-16 h-16 text-gray-400 mb-4" />
-          <p className="text-gray-500 dark:text-gray-400 text-lg">
+          <p className="text-on-surface-variant text-lg">
             No performance data available
           </p>
-          <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
+          <p className="text-on-surface-variant text-sm mt-2">
             Add investments to see performance trends
           </p>
         </div>
@@ -134,7 +134,7 @@ export default function PerformanceChart({ investments }) {
                 : 'bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/30 border-red-200 dark:border-red-800'
             }`}>
               <p className={`text-xs font-semibold mb-1 ${
-                totalGain >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'
+                totalGain >= 0 ? 'text-secondary font-extrabold' : 'text-red-700 dark:text-red-300'
               }`}>
                 Return %
               </p>
@@ -147,7 +147,7 @@ export default function PerformanceChart({ investments }) {
           </div>
 
           {/* Performance Chart */}
-          <div className="h-80 bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4">
+          <div className="h-80 bg-surface rounded-xl p-4">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={performanceData}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" stroke="#94a3b8" />

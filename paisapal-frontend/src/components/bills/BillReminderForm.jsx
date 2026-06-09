@@ -81,13 +81,13 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+    <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <Bell className="w-6 h-6 text-emerald-600" />
+        <h3 className="text-xl font-bold text-on-surface flex items-center gap-2">
+          <Bell className="w-6 h-6 text-secondary" />
           {isEditing ? 'Edit Bill Reminder' : 'Create Bill Reminder'}
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-on-surface-variant mt-1">
           Never miss a payment with automatic reminders
         </p>
       </div>
@@ -95,7 +95,7 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Bill Name */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Bill Name
           </label>
           <div className="relative">
@@ -104,8 +104,8 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
               type="text"
               placeholder="e.g., Electricity Bill, Rent, Internet"
               className={`w-full pl-10 pr-4 py-3 border ${
-                errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                errors.name ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
               {...register('name', { required: 'Bill name is required' })}
             />
           </div>
@@ -117,7 +117,7 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
         {/* Amount and Category */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Amount
             </label>
             <div className="relative">
@@ -128,8 +128,8 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
                 min="0"
                 placeholder="0.00"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.amount ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                  errors.amount ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
                 {...register('amount', {
                   required: 'Amount is required',
                   min: { value: 0.01, message: 'Amount must be greater than 0' }
@@ -142,13 +142,13 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
           </div>
           
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Category
             </label>
             <select
               className={`w-full px-4 py-3 border ${
-                errors.category ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                errors.category ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
               {...register('category', { required: 'Category is required' })}
             >
               {CATEGORIES.map(cat => (
@@ -164,7 +164,7 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
         {/* Due Date and Frequency */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Due Date
             </label>
             <div className="relative">
@@ -172,8 +172,8 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
               <input
                 type="date"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.dueDate ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                  errors.dueDate ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
                 {...register('dueDate', { required: 'Due date is required' })}
               />
             </div>
@@ -183,13 +183,13 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
           </div>
           
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Frequency
             </label>
             <select
               className={`w-full px-4 py-3 border ${
-                errors.frequency ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                errors.frequency ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
               {...register('frequency', { required: 'Frequency is required' })}
             >
               {FREQUENCIES.map(freq => (
@@ -204,15 +204,15 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
 
         {/* Reminder Days */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Reminder
           </label>
           <div className="relative">
             <Bell className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <select
               className={`w-full pl-10 pr-4 py-3 border ${
-                errors.reminderDays ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all appearance-none`}
+                errors.reminderDays ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all appearance-none`}
               {...register('reminderDays', { required: 'Reminder setting is required' })}
             >
               {REMINDER_DAYS.map(day => (
@@ -223,30 +223,30 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
           {errors.reminderDays && (
             <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.reminderDays.message}</p>
           )}
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-on-surface-variant mt-1">
             You'll receive a notification before the due date
           </p>
         </div>
 
         {/* Notes */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Notes (Optional)
           </label>
           <textarea
             rows={3}
             placeholder="Add any additional notes about this bill..."
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all resize-none"
+            className="w-full px-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all resize-none"
             {...register('notes')}
           />
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-outline-variant/30">
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+            className="flex-1 flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
           >
             {isLoading ? (
               <>
@@ -265,7 +265,7 @@ export default function BillReminderForm({ onSuccess, onCancel, initialData = nu
             <button
               type="button"
               onClick={onCancel}
-              className="sm:w-auto px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              className="sm:w-auto px-6 py-3 bg-surface-container-highest text-on-surface font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
             >
               Cancel
             </button>

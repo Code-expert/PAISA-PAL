@@ -16,13 +16,13 @@ const Button = React.forwardRef(({
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
 
   const variants = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 border-primary-600',
-    secondary: 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-primary-500',
+    primary: 'bg-primary text-on-primary hover:brightness-110 focus:ring-primary border-primary',
+    secondary: 'bg-surface-container backdrop-blur-md text-on-surface border border-outline-variant/50 hover:bg-surface-container-highest focus:ring-secondary',
     success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 border-green-600',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 border-red-600',
+    danger: 'bg-error text-on-error hover:brightness-110 focus:ring-error border-error',
     warning: 'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500 border-yellow-600',
-    ghost: 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-primary-500',
-    link: 'text-primary-600 hover:text-primary-700 underline-offset-4 hover:underline focus:ring-primary-500',
+    ghost: 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface focus:ring-primary',
+    link: 'text-primary hover:brightness-110 underline-offset-4 hover:underline focus:ring-primary',
   }
 
   const sizes = {

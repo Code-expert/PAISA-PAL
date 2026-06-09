@@ -92,16 +92,16 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+    <div className="max-w-2xl mx-auto bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 shadow-lg">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-          <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl mr-3">
+        <h2 className="text-2xl font-bold text-on-surface flex items-center">
+          <div className="p-2 bg-gradient-to-br from-primary to-secondary rounded-xl mr-3">
             <span className="text-white text-2xl font-bold">₹</span>
           </div>
           {initialData ? 'Edit Transaction' : 'Add New Transaction'}
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-14">
+        <p className="text-sm text-on-surface-variant mt-1 ml-14">
           Track your income, expenses, and transfers
         </p>
       </div>
@@ -109,7 +109,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Transaction Type - Enhanced Cards */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+          <label className="block text-sm font-semibold text-on-surface mb-3">
             Transaction Type
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -123,7 +123,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
                     relative flex flex-col items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200
                     ${isSelected
                       ? 'border-transparent shadow-lg'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md'
+                      : 'border-outline-variant/30 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md'
                     }
                   `}
                 >
@@ -140,7 +140,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <span className={`font-semibold text-sm ${
-                    isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'
+                    isSelected ? 'text-on-surface' : 'text-on-surface-variant'
                   }`}>
                     {type.label}
                   </span>
@@ -156,7 +156,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
         {/* Amount and Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Amount
             </label>
             <div className="relative">
@@ -167,8 +167,8 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
                 min="0"
                 placeholder="0.00"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.amount ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200`}
+                  errors.amount ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200`}
                 {...register('amount', {
                   required: 'Amount is required',
                   min: { value: 0.01, message: 'Amount must be greater than 0' }
@@ -181,7 +181,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Date
             </label>
             <div className="relative">
@@ -189,8 +189,8 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
               <input
                 type="date"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.date ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200`}
+                  errors.date ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200`}
                 {...register('date', { required: 'Date is required' })}
               />
             </div>
@@ -202,7 +202,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
 
         {/* Category */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Category
           </label>
           <Controller
@@ -214,8 +214,8 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
                 <select
                   {...field}
                   className={`w-full px-4 py-3 border ${
-                    errors.category ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200`}
+                    errors.category ? 'border-red-500' : 'border-outline-variant/50'
+                  } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200`}
                 >
                   <option value="">Select a category</option>
                   {CATEGORIES[selectedType]?.map((cat) => (
@@ -234,7 +234,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Description
           </label>
           <div className="relative">
@@ -242,7 +242,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
             <textarea
               rows={3}
               placeholder="Add a description for this transaction..."
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200 resize-none"
+              className="w-full pl-10 pr-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200 resize-none"
               {...register('description')}
             />
           </div>
@@ -250,7 +250,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
 
         {/* Tags */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Tags (Optional)
           </label>
           <div className="relative">
@@ -258,21 +258,21 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
             <input
               type="text"
               placeholder="work, project, client (comma separated)"
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200"
+              className="w-full pl-10 pr-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200"
               {...register('tags')}
             />
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-on-surface-variant mt-1">
             Separate multiple tags with commas
           </p>
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-outline-variant/30">
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="flex-1 flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-xl hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             {!isLoading && <Save className="w-5 h-5 mr-2" />}
             {isLoading 
@@ -287,7 +287,7 @@ export default function TransactionForm({ onSuccess, onCancel, initialData = nul
             <button
               type="button"
               onClick={onCancel}
-              className="sm:w-auto px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center"
+              className="sm:w-auto px-6 py-3 bg-surface-container-highest text-on-surface font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center"
             >
               <X className="w-5 h-5 mr-2" />
               Cancel

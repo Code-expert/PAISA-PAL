@@ -21,20 +21,20 @@ export default function LoadingSpinner({
         <div className="relative">
           <Loader2 
             className={clsx(
-              'animate-spin text-emerald-600 dark:text-emerald-400 transition-colors duration-300',
+              'animate-spin text-secondary transition-colors duration-300',
               sizeClasses[size]
             )} 
           />
           {/* Optional: Add a subtle glow effect */}
           <div className={clsx(
-            'absolute inset-0 animate-spin rounded-full bg-emerald-400/20 dark:bg-emerald-500/20 blur-sm',
+            'absolute inset-0 animate-spin rounded-full bg-emerald-400/20 dark:bg-secondary/20 blur-sm',
             sizeClasses[size]
           )} />
         </div>
         
         {/* Loading text with smooth animation */}
         {text && (
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 animate-pulse transition-colors duration-300">
+          <p className="text-sm font-medium text-on-surface-variant animate-pulse transition-colors duration-300">
             {text}
           </p>
         )}

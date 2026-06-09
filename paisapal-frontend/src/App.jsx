@@ -21,14 +21,15 @@ import TransactionsPage from './pages/TransactionsPage'
 import BudgetsPage from './pages/BudgetsPage'
 import InvestmentsPage from './pages/InvestmentsPage'
 import ReceiptsPage from './pages/ReceiptsPage'
-import AnalyticsPage from './pages/AnalyticsPage'
 import InsightsPage from './pages/InsightsPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
+import GlobalVoiceLog from './components/ai/GlobalVoiceLog'
 import NotificationsPage from './pages/NotificationsPage'
 import GoogleCallback from './components/auth/GoogleCallback'
 import NotFoundPage from './pages/error/NotFoundPage'
 import BillsPage from './pages/BillsPage'
+import ReportPage from './pages/ReportPage' // ✅ ADD
 
 
 function AppContent() {
@@ -65,8 +66,8 @@ function AppContent() {
                 <Route path="/budgets" element={<BudgetsPage />} />
                 <Route path="/investments" element={<InvestmentsPage />} />
                 <Route path="/receipts" element={<ReceiptsPage />} />
-                <Route path="/analytics" element={<AnalyticsPage />} />
                 <Route path="/insights" element={<InsightsPage />} />
+                <Route path="/report" element={<ReportPage />} /> {/* ✅ ADD */}
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />

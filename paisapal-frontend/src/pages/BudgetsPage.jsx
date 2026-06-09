@@ -2,15 +2,21 @@ import { useState } from 'react'
 import { Plus, Target } from 'lucide-react'
 import BudgetForm from '../components/budgets/BudgetForm'
 import BudgetList from '../components/budgets/BudgetList'
+import BudgetDetailsModal from '../components/budgets/BudgetDetailsModal'
 import Modal from '../components/ui/Modal'
 
 function BudgetsPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingBudget, setEditingBudget] = useState(null)
+  const [selectedBudgetForDetails, setSelectedBudgetForDetails] = useState(null)
   
   const handleEdit = (budget) => {
     setEditingBudget(budget)
     setShowForm(true)
+  }
+
+  const handleCardClick = (budget) => {
+    setSelectedBudgetForDetails(budget)
   }
 
   const handleSuccess = () => {
@@ -31,14 +37,14 @@ function BudgetsPage() {
           <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
             Budgets
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">
+          <p className="text-on-surface-variant mt-1 text-sm sm:text-base">
             Set spending limits and track your financial goals
           </p>
         </div>
 
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="flex items-center justify-center px-4 py-2.5 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
         >
           <Plus className="w-5 h-5 mr-2" />
           Create Budget
@@ -49,6 +55,7 @@ function BudgetsPage() {
       <BudgetList
         onEdit={handleEdit}
         onCreate={() => setShowForm(true)}
+        onCardClick={handleCardClick}
       />
 
       {/* Budget Form Modal */}
@@ -64,6 +71,13 @@ function BudgetsPage() {
           onCancel={handleCancel}
         />
       </Modal>
+
+      {/* Budget Details Modal */}
+      <BudgetDetailsModal 
+        isOpen={!!selectedBudgetForDetails} 
+        onClose={() => setSelectedBudgetForDetails(null)} 
+        budget={selectedBudgetForDetails} 
+      />
     </div>
   )
 }

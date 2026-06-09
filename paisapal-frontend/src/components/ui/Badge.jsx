@@ -14,8 +14,8 @@ export default function Badge({
   }
 
   const variantClasses = {
-    default: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300',
-    primary: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
+    default: 'bg-surface-container-high text-on-surface',
+    primary: 'bg-secondary/20 dark:bg-emerald-900/30 text-secondary font-extrabold',
     success: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
     warning: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
     error: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'

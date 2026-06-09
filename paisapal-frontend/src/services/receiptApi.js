@@ -61,7 +61,7 @@ export const receiptApi = createApi({
     // ✅ Upload receipt
     uploadReceipt: builder.mutation({
       query: (formData) => ({
-        url: '/uploads',
+        url: '/upload',
         method: 'POST',
         body: formData,
       }),

@@ -4,9 +4,12 @@ import {
   useUploadReceiptMutation, 
   useGetReceiptStatusQuery
 } from '../../services/receiptApi'
+import { transactionApi } from '../../services/transactionApi'
+import { useDispatch } from 'react-redux'
 import { toast } from 'react-hot-toast'
 
 export default function ReceiptUpload({ onReceiptUploaded }) {
+  const dispatch = useDispatch()
   const [dragActive, setDragActive] = useState(false)
   const [previewFiles, setPreviewFiles] = useState([])
   const [uploadedReceiptIds, setUploadedReceiptIds] = useState([])
@@ -133,6 +136,9 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
           { duration: 4000, id: `ocr-${receiptId}` }
         )
         
+        // Dispatch invalidation OUTSIDE the setState callback!
+        dispatch(transactionApi.util.invalidateTags([{ type: 'Transaction', id: 'LIST' }]))
+        
         setProcessedReceipts(prev => {
           if (!prev.find(r => r._id === receipt._id)) {
             return [...prev, receipt]
@@ -232,15 +238,15 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+    <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <Upload className="w-6 h-6 text-emerald-600" />
+          <h2 className="text-xl font-bold text-on-surface flex items-center gap-2">
+            <Upload className="w-6 h-6 text-secondary" />
             Upload Receipts
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-on-surface-variant mt-1">
             Automatic OCR processing and transaction creation
           </p>
         </div>
@@ -259,7 +265,7 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
         className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-200 ${
           dragActive 
             ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 scale-[1.02]' 
-            : 'border-gray-300 dark:border-gray-600 hover:border-emerald-400 dark:hover:border-emerald-600'
+            : 'border-outline-variant/50 hover:border-emerald-400 dark:hover:border-emerald-600'
         }`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -277,19 +283,19 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
         
         <div className="space-y-4">
           <div className="flex justify-center">
-            <div className="p-5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg">
+            <div className="p-5 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg">
               <Upload className="w-10 h-10 text-white" />
             </div>
           </div>
           
           <div>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
+            <p className="text-xl font-bold text-on-surface">
               Drop receipts here or click to browse
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-sm text-on-surface-variant mt-2">
               Supports JPG, PNG, PDF files up to 10MB
             </p>
-            <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mt-3">
+            <p className="text-sm font-medium text-secondary mt-3">
               🎯 Free OCR • Auto-categorization • Instant transactions
             </p>
           </div>
@@ -297,7 +303,7 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
           <div className="flex justify-center gap-3 pt-2">
             <button
               onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}
-              className="flex items-center px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              className="flex items-center px-4 py-2.5 bg-surface-container-highest text-on-surface font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               <FileText className="w-4 h-4 mr-2" />
               Browse Files
@@ -311,7 +317,7 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
                   fileInputRef.current.click()
                 }
               }}
-              className="flex items-center px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              className="flex items-center px-4 py-2.5 bg-surface-container-highest text-on-surface font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               <Camera className="w-4 h-4 mr-2" />
               Take Photo
@@ -323,8 +329,8 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
       {/* OCR Status Display */}
       {uploadedReceiptIds.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Clock className="w-5 h-5 text-emerald-600" />
+          <h4 className="font-semibold text-on-surface flex items-center gap-2">
+            <Clock className="w-5 h-5 text-secondary" />
             OCR Processing Status
           </h4>
           
@@ -343,7 +349,7 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
       {/* File Previews */}
       {previewFiles.length > 0 && (
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900 dark:text-white">
+          <h4 className="font-semibold text-on-surface">
             Files to Upload ({previewFiles.length})
           </h4>
           
@@ -368,10 +374,10 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  <p className="text-sm font-semibold text-on-surface truncate">
                     {fileObj.name}
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-on-surface-variant">
                     {formatFileSize(fileObj.size)}
                   </p>
                 </div>
@@ -389,7 +395,7 @@ export default function ReceiptUpload({ onReceiptUploaded }) {
           <button
             onClick={uploadFiles}
             disabled={isLoading}
-            className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="w-full flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 mr-2 animate-spin" />

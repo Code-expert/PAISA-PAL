@@ -24,7 +24,7 @@ const Input = React.forwardRef(({
     }
   }, [showPassword, type, showPasswordToggle])
 
-  const baseClasses = 'block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 bg-white dark:bg-gray-800 transition-colors'
+  const baseClasses = 'block w-full rounded-md border-0 py-1.5 text-on-surface shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 bg-surface-container backdrop-blur-md transition-colors'
 
   const errorClasses = error 
     ? 'ring-red-300 dark:ring-red-600 focus:ring-red-600' 
@@ -36,7 +36,7 @@ const Input = React.forwardRef(({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium leading-6 text-gray-900 dark:text-white mb-2">
+        <label className="block text-sm font-medium leading-6 text-on-surface mb-2">
           {label}
         </label>
       )}
@@ -93,7 +93,7 @@ const Input = React.forwardRef(({
       )}
       
       {helperText && !error && (
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-sm text-on-surface-variant">
           {helperText}
         </p>
       )}

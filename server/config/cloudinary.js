@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
     folder: 'paisapal/receipts',
     allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'pdf'],
     transformation: [
-      { width: 1000, height: 1400, crop: 'limit' }, // Optimize size
+      { width: 1000, height: 1400, crop: 'limit', background: 'white' }, // Optimize size and fix transparency
       { quality: 'auto' }
     ]
   }

@@ -2,6 +2,172 @@
 
 @import "tailwindcss";
 
+:root {
+  --sys-background: #ffffff;
+  --sys-on-background: #09090b;
+  --sys-surface: #ffffff;
+  --sys-surface-dim: #fafafa;
+  --sys-surface-bright: #ffffff;
+  --sys-surface-container-lowest: #ffffff;
+  --sys-surface-container-low: #fafafa;
+  --sys-surface-container: #f4f4f5;
+  --sys-surface-container-high: #e4e4e7;
+  --sys-surface-container-highest: #d4d4d8;
+  --sys-on-surface: #09090b;
+  --sys-on-surface-variant: #71717a;
+  --sys-outline: #a1a1aa;
+  --sys-outline-variant: #e4e4e7;
+  
+  --sys-primary: #09090b;
+  --sys-on-primary: #fafafa;
+  --sys-primary-container: #e4e4e7;
+  --sys-on-primary-container: #09090b;
+  --sys-primary-fixed: #e4e4e7;
+  --sys-primary-fixed-dim: #d4d4d8;
+  --sys-on-primary-fixed: #09090b;
+  --sys-on-primary-fixed-variant: #27272a;
+
+  --sys-secondary: #0055ff;
+  --sys-on-secondary: #ffffff;
+  --sys-secondary-container: #dbeafe;
+  --sys-on-secondary-container: #1e3a8a;
+  --sys-secondary-fixed: #dbeafe;
+  --sys-secondary-fixed-dim: #bfdbfe;
+  --sys-on-secondary-fixed: #1e3a8a;
+  --sys-on-secondary-fixed-variant: #1d4ed8;
+
+  --sys-tertiary: #10b981;
+  --sys-on-tertiary: #ffffff;
+  --sys-tertiary-container: #d1fae5;
+  --sys-on-tertiary-container: #064e3b;
+  --sys-tertiary-fixed: #d1fae5;
+  --sys-tertiary-fixed-dim: #a7f3d0;
+  --sys-on-tertiary-fixed: #064e3b;
+  --sys-on-tertiary-fixed-variant: #047857;
+
+  --sys-error: #ef4444;
+  --sys-on-error: #ffffff;
+  --sys-error-container: #fee2e2;
+  --sys-on-error-container: #7f1d1d;
+  
+  --sys-inverse-surface: #09090b;
+  --sys-inverse-on-surface: #f4f4f5;
+  --sys-inverse-primary: #a1a1aa;
+  --sys-surface-tint: #09090b;
+}
+
+.dark {
+  --sys-background: #09090b;
+  --sys-on-background: #fafafa;
+  --sys-surface: #09090b;
+  --sys-surface-dim: #18181b;
+  --sys-surface-bright: #27272a;
+  --sys-surface-container-lowest: #000000;
+  --sys-surface-container-low: #09090b;
+  --sys-surface-container: #18181b;
+  --sys-surface-container-high: #27272a;
+  --sys-surface-container-highest: #3f3f46;
+  --sys-on-surface: #fafafa;
+  --sys-on-surface-variant: #a1a1aa;
+  --sys-outline: #52525b;
+  --sys-outline-variant: #27272a;
+  
+  --sys-primary: #fafafa;
+  --sys-on-primary: #09090b;
+  --sys-primary-container: #27272a;
+  --sys-on-primary-container: #fafafa;
+  --sys-primary-fixed: #e4e4e7;
+  --sys-primary-fixed-dim: #d4d4d8;
+  --sys-on-primary-fixed: #09090b;
+  --sys-on-primary-fixed-variant: #27272a;
+
+  --sys-secondary: #3b82f6;
+  --sys-on-secondary: #ffffff;
+  --sys-secondary-container: #1e3a8a;
+  --sys-on-secondary-container: #dbeafe;
+  --sys-secondary-fixed: #dbeafe;
+  --sys-secondary-fixed-dim: #bfdbfe;
+  --sys-on-secondary-fixed: #1e3a8a;
+  --sys-on-secondary-fixed-variant: #1d4ed8;
+
+  --sys-tertiary: #34d399;
+  --sys-on-tertiary: #022c22;
+  --sys-tertiary-container: #064e3b;
+  --sys-on-tertiary-container: #d1fae5;
+  --sys-tertiary-fixed: #d1fae5;
+  --sys-tertiary-fixed-dim: #a7f3d0;
+  --sys-on-tertiary-fixed: #064e3b;
+  --sys-on-tertiary-fixed-variant: #047857;
+
+  --sys-error: #f87171;
+  --sys-on-error: #450a0a;
+  --sys-error-container: #7f1d1d;
+  --sys-on-error-container: #fee2e2;
+  
+  --sys-inverse-surface: #fafafa;
+  --sys-inverse-on-surface: #09090b;
+  --sys-inverse-primary: #52525b;
+  --sys-surface-tint: #fafafa;
+}
+
+@theme {
+  --color-background: var(--sys-background);
+  --color-on-background: var(--sys-on-background);
+  --color-surface: var(--sys-surface);
+  --color-surface-dim: var(--sys-surface-dim);
+  --color-surface-bright: var(--sys-surface-bright);
+  --color-surface-container-lowest: var(--sys-surface-container-lowest);
+  --color-surface-container-low: var(--sys-surface-container-low);
+  --color-surface-container: var(--sys-surface-container);
+  --color-surface-container-high: var(--sys-surface-container-high);
+  --color-surface-container-highest: var(--sys-surface-container-highest);
+  --color-on-surface: var(--sys-on-surface);
+  --color-on-surface-variant: var(--sys-on-surface-variant);
+  --color-outline: var(--sys-outline);
+  --color-outline-variant: var(--sys-outline-variant);
+  
+  --color-primary: var(--sys-primary);
+  --color-on-primary: var(--sys-on-primary);
+  --color-primary-container: var(--sys-primary-container);
+  --color-on-primary-container: var(--sys-on-primary-container);
+  --color-primary-fixed: var(--sys-primary-fixed);
+  --color-primary-fixed-dim: var(--sys-primary-fixed-dim);
+  --color-on-primary-fixed: var(--sys-on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--sys-on-primary-fixed-variant);
+
+  --color-secondary: var(--sys-secondary);
+  --color-on-secondary: var(--sys-on-secondary);
+  --color-secondary-container: var(--sys-secondary-container);
+  --color-on-secondary-container: var(--sys-on-secondary-container);
+  --color-secondary-fixed: var(--sys-secondary-fixed);
+  --color-secondary-fixed-dim: var(--sys-secondary-fixed-dim);
+  --color-on-secondary-fixed: var(--sys-on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--sys-on-secondary-fixed-variant);
+
+  --color-tertiary: var(--sys-tertiary);
+  --color-on-tertiary: var(--sys-on-tertiary);
+  --color-tertiary-container: var(--sys-tertiary-container);
+  --color-on-tertiary-container: var(--sys-on-tertiary-container);
+  --color-tertiary-fixed: var(--sys-tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--sys-tertiary-fixed-dim);
+  --color-on-tertiary-fixed: var(--sys-on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant: var(--sys-on-tertiary-fixed-variant);
+
+  --color-error: var(--sys-error);
+  --color-on-error: var(--sys-on-error);
+  --color-error-container: var(--sys-error-container);
+  --color-on-error-container: var(--sys-on-error-container);
+
+  --color-inverse-surface: var(--sys-inverse-surface);
+  --color-inverse-on-surface: var(--sys-inverse-on-surface);
+  --color-inverse-primary: var(--sys-inverse-primary);
+  --color-surface-tint: var(--sys-surface-tint);
+
+  --font-headline: "Inter", system-ui, sans-serif;
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-label: "Public Sans", system-ui, sans-serif;
+}
 /* Base styles */
 * {
   border-color: inherit;
@@ -12,7 +178,7 @@ html {
 }
 
 body {
-  @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100;
+  @apply bg-background text-on-surface;
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

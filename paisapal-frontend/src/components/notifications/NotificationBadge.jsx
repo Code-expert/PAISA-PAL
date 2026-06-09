@@ -10,7 +10,7 @@ export default function NotificationBadge({ className = '' }) {
 
   return (
     <div className={`relative ${className}`}>
-      <Bell className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+      <Bell className="w-6 h-6 text-on-surface-variant" />
       {unreadCount > 0 && (
         <Badge
           variant="error"

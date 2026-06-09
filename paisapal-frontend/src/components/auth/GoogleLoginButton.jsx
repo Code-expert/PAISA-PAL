@@ -2,7 +2,8 @@ import React from 'react'
 
 export default function GoogleLoginButton({ isSignUp = false, disabled = false }) {
   const handleGoogleLogin = () => {
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+  const defaultApiUrl = import.meta.env.PROD ? 'https://paisa-pal.onrender.com' : 'http://localhost:5000'
+  const API_URL = import.meta.env.VITE_API_URL || defaultApiUrl
   window.location.href = `${API_URL}/api/auth/google`  
 }
 
@@ -11,7 +12,7 @@ export default function GoogleLoginButton({ isSignUp = false, disabled = false }
       type="button"
       onClick={handleGoogleLogin}
       disabled={disabled}
-      className="w-full inline-flex justify-center items-center px-6 py-3.5 sm:py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-base font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg group"
+      className="w-full inline-flex justify-center items-center px-6 py-3.5 sm:py-4 border-2 border-outline-variant/50 rounded-xl text-base font-semibold text-gray-700 dark:text-gray-200 bg-surface-container backdrop-blur-md hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg group"
       aria-label={isSignUp ? 'Sign up with Google' : 'Sign in with Google'}
     >
       {/* Official Google Logo */}

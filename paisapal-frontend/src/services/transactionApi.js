@@ -57,10 +57,15 @@ export const transactionApi = createApi({
       }),
       invalidatesTags: [
         { type: 'Transaction', id: 'LIST' },
-        { type: 'Budget', id: 'LIST' }, 
       ],
-      // ✅ REMOVED optimistic update - let tag invalidation handle it
-      // Optimistic updates with complex cache keys are error-prone
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          // Invalidate budget cache since transaction impacts budget
+          const { budgetApi } = await import('./budgetApi');
+          dispatch(budgetApi.util.invalidateTags(['Budget']));
+        } catch {}
+      }
     }),
     
     updateTransaction: builder.mutation({
@@ -72,8 +77,14 @@ export const transactionApi = createApi({
       invalidatesTags: (result, error, { id }) => [
         { type: 'Transaction', id },
         { type: 'Transaction', id: 'LIST' },
-        { type: 'Budget', id: 'LIST' },
       ],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const { budgetApi } = await import('./budgetApi');
+          dispatch(budgetApi.util.invalidateTags(['Budget']));
+        } catch {}
+      }
     }),
     
     deleteTransaction: builder.mutation({
@@ -84,9 +95,14 @@ export const transactionApi = createApi({
       invalidatesTags: (result, error, id) => [
         { type: 'Transaction', id },
         { type: 'Transaction', id: 'LIST' },
-        { type: 'Budget', id: 'LIST' },
       ],
-      // ✅ REMOVED optimistic update - let tag invalidation handle it
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const { budgetApi } = await import('./budgetApi');
+          dispatch(budgetApi.util.invalidateTags(['Budget']));
+        } catch {}
+      }
     }),
   }),
 })

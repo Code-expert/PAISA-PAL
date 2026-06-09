@@ -26,6 +26,7 @@ export const getBudgets = catchAsync(async (req, res) => {
     
     return {
       ...budget.toObject(),
+      spent: actualAmount,
       actual: actualAmount,
       remaining,
       percentage

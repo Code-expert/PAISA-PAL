@@ -50,17 +50,17 @@ export default function Modal({
               leaveTo="opacity-0 scale-95 translate-y-4"
             >
               <Dialog.Panel className={clsx(
-                'w-full transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 text-left align-middle shadow-2xl transition-all border border-gray-200 dark:border-gray-700',
+                'w-full transform overflow-hidden rounded-2xl bg-surface-container backdrop-blur-md text-left align-middle shadow-2xl transition-all border border-outline-variant/30',
                 sizeClasses[size],
                 className
               )}>
                 {/* Header with gradient accent */}
-                <div className="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-800 px-6 py-4 transition-colors duration-300">
+                <div className="border-b border-outline-variant/30 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-800 px-6 py-4 transition-colors duration-300">
                   <div className="flex items-center justify-between">
                     {title && (
                       <Dialog.Title
                         as="h3"
-                        className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white transition-colors duration-300"
+                        className="text-lg sm:text-xl font-bold text-on-surface transition-colors duration-300"
                       >
                         {title}
                       </Dialog.Title>
@@ -69,7 +69,7 @@ export default function Modal({
                     {showCloseButton && (
                       <button
                         onClick={onClose}
-                        className="rounded-lg p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400"
+                        className="rounded-lg p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary dark:focus:ring-emerald-400"
                         aria-label="Close modal"
                       >
                         <X className="h-5 w-5" />

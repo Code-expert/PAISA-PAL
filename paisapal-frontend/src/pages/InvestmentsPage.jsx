@@ -68,7 +68,7 @@ export default function InvestmentsPage() {
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
+            <div key={i} className="h-32 bg-outline-variant/50 rounded-2xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -80,14 +80,14 @@ export default function InvestmentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg">
+          <div className="p-3 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg">
             <Wallet className="w-7 h-7 text-white" />
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Investment Portfolio
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+            <p className="text-on-surface-variant text-sm sm:text-base">
               Track and manage your investment portfolio
             </p>
           </div>
@@ -98,8 +98,8 @@ export default function InvestmentsPage() {
             onClick={() => setViewMode('portfolio')}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm transition-all ${
               viewMode === 'portfolio'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-primary text-on-primary shadow-md'
+                : 'bg-surface-container-highest text-on-surface hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             <PieChart className="w-4 h-4" />
@@ -109,8 +109,8 @@ export default function InvestmentsPage() {
             onClick={() => setViewMode('performance')}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm transition-all ${
               viewMode === 'performance'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-primary text-on-primary shadow-md'
+                : 'bg-surface-container-highest text-on-surface hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             <BarChart3 className="w-4 h-4" />
@@ -120,22 +120,22 @@ export default function InvestmentsPage() {
             onClick={() => setViewMode('list')}
             className={`px-3 py-2 rounded-lg font-semibold text-sm transition-all ${
               viewMode === 'list'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-primary text-on-primary shadow-md'
+                : 'bg-surface-container-highest text-on-surface hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             List
           </button>
           <button
             onClick={refetch}
-            className="flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold text-sm transition-all"
+            className="flex items-center gap-2 px-3 py-2 bg-surface-container-highest text-on-surface rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold text-sm transition-all"
           >
             <RefreshCw className="w-4 h-4" />
             Refresh
           </button>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all shadow-lg hover:shadow-xl text-sm"
           >
             <Plus className="w-4 h-4" />
             Add Investment
@@ -145,12 +145,12 @@ export default function InvestmentsPage() {
 
       {/* Portfolio Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all">
           <div className="flex items-center gap-3 mb-3">
             <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
               <Wallet className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+            <h3 className="text-sm font-semibold text-on-surface-variant">
               Total Value
             </h3>
           </div>
@@ -159,21 +159,21 @@ export default function InvestmentsPage() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all">
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-2.5 bg-gray-100 dark:bg-gray-700 rounded-xl">
-              <Target className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+            <div className="p-2.5 bg-surface-container-highest rounded-xl">
+              <Target className="w-6 h-6 text-on-surface-variant" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+            <h3 className="text-sm font-semibold text-on-surface-variant">
               Total Cost
             </h3>
           </div>
-          <p className="text-3xl font-bold text-gray-600 dark:text-gray-400">
+          <p className="text-3xl font-bold text-on-surface-variant">
             {formatCurrency(portfolioMetrics.totalCost)}
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all">
           <div className="flex items-center gap-3 mb-3">
             <div className={`p-2.5 rounded-xl ${
               portfolioMetrics.totalGain >= 0 
@@ -186,7 +186,7 @@ export default function InvestmentsPage() {
                 <TrendingDown className="w-6 h-6 text-red-600 dark:text-red-400" />
               )}
             </div>
-            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+            <h3 className="text-sm font-semibold text-on-surface-variant">
               Total Gain/Loss
             </h3>
           </div>
@@ -199,12 +199,12 @@ export default function InvestmentsPage() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 hover:shadow-lg transition-all">
           <div className="flex items-center gap-3 mb-3">
             <div className="p-2.5 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
               <BarChart3 className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+            <h3 className="text-sm font-semibold text-on-surface-variant">
               Return %
             </h3>
           </div>
@@ -223,8 +223,8 @@ export default function InvestmentsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <PortfolioChart investments={investments} />
           
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+          <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
+            <h3 className="text-lg font-bold text-on-surface mb-4">
               Portfolio Insights
             </h3>
             <div className="space-y-4">

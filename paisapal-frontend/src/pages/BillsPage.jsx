@@ -82,14 +82,14 @@ export default function BillsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg">
+          <div className="p-3 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg">
             <Bell className="w-7 h-7 text-white" />
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Bill Reminders
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+            <p className="text-on-surface-variant text-sm sm:text-base">
               Never miss a payment with automated reminders
             </p>
           </div>
@@ -100,7 +100,7 @@ export default function BillsPage() {
             setEditingBill(null)
             setShowForm(true)
           }}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all shadow-lg hover:shadow-xl"
         >
           <Plus className="w-5 h-5" />
           Add Bill Reminder
@@ -108,7 +108,7 @@ export default function BillsPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-1">
+      <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-1">
         <div className="flex gap-2 overflow-x-auto">
           {[
             { value: 'all', label: 'All Bills', count: bills.length },
@@ -121,8 +121,8 @@ export default function BillsPage() {
               onClick={() => setFilter(tab.value)}
               className={`flex-1 min-w-[120px] px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
                 filter === tab.value
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-primary text-on-primary shadow-md'
+                  : 'text-on-surface-variant hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               {tab.label} ({tab.count})
@@ -135,16 +135,16 @@ export default function BillsPage() {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-64 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
+            <div key={i} className="h-64 bg-outline-variant/50 rounded-2xl animate-pulse" />
           ))}
         </div>
       ) : filteredBills.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-12 text-center">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-12 text-center">
           <Calendar className="w-20 h-20 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-xl font-bold text-on-surface mb-2">
             No bills found
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-on-surface-variant mb-6">
             {filter === 'all' 
               ? 'Add your first bill reminder to get started'
               : `No ${filter} bills at the moment`
@@ -152,7 +152,7 @@ export default function BillsPage() {
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg"
+            className="inline-flex items-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all shadow-lg"
           >
             <Plus className="w-5 h-5 mr-2" />
             Add Bill Reminder
@@ -168,10 +168,10 @@ export default function BillsPage() {
             return (
               <div 
                 key={bill._id} 
-                className={`bg-white dark:bg-gray-800 rounded-2xl border-2 p-6 hover:shadow-xl transition-all duration-300 ${
+                className={`bg-surface-container backdrop-blur-md rounded-3xl border-2 p-6 hover:shadow-xl transition-all duration-300 ${
                   isOverdue ? 'border-red-500 dark:border-red-600' : 
                   isDueSoon ? 'border-yellow-500 dark:border-yellow-600' : 
-                  'border-gray-200 dark:border-gray-700'
+                  'border-outline-variant/30'
                 }`}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
@@ -179,28 +179,28 @@ export default function BillsPage() {
                   <div className="flex items-start gap-3 flex-1">
                     <div className="text-3xl">{getCategoryEmoji(bill.category)}</div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                      <h3 className="text-lg font-bold text-on-surface mb-1">
                         {bill.name}
                       </h3>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-surface-container-highest text-on-surface">
                         {bill.category}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-2xl font-bold text-on-surface">
                       {formatCurrency(bill.amount)}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center text-sm text-on-surface-variant">
                     <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
                     <span>Due: {new Date(bill.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                   </div>
                   
-                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center text-sm text-on-surface-variant">
                     <Bell className="w-4 h-4 mr-2 flex-shrink-0" />
                     <span>Remind {bill.reminderDays} day{bill.reminderDays !== 1 ? 's' : ''} before</span>
                   </div>
@@ -248,7 +248,7 @@ export default function BillsPage() {
                   {!bill.isPaid && (
                     <button
                       onClick={() => handleMarkPaid(bill._id)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all text-sm"
                     >
                       <Check className="w-4 h-4" />
                       Mark Paid
@@ -256,7 +256,7 @@ export default function BillsPage() {
                   )}
                   <button
                     onClick={() => handleEdit(bill)}
-                    className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                    className="px-3 py-2 bg-surface-container-highest text-on-surface font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>

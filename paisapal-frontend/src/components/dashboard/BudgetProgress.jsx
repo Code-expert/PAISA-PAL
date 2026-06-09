@@ -30,7 +30,7 @@ const BudgetItem = ({ budget }) => {
   const getStatusIcon = () => {
     if (isOverBudget) return <AlertTriangle className="w-5 h-5 text-red-500" />
     if (isNearLimit) return <AlertTriangle className="w-5 h-5 text-yellow-500" />
-    return <CheckCircle className="w-5 h-5 text-emerald-500" />
+    return <CheckCircle className="w-5 h-5 text-secondary" />
   }
 
   const getStatusBadge = () => {
@@ -40,19 +40,19 @@ const BudgetItem = ({ budget }) => {
   }
 
   return (
-    <div className="group p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200">
+    <div className="group p-4 bg-surface-container/40 backdrop-blur-md rounded-xl border border-outline-variant/30 hover:shadow-lg transition-all duration-200">
       <div className="space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-lg">
+            <div className="p-2 bg-secondary/10 rounded-lg">
               {getStatusIcon()}
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 dark:text-white">
+              <h4 className="font-semibold text-on-surface">
                 {budget.category || budget.name}
               </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-on-surface-variant">
                 {percentage.toFixed(0)}% used
               </p>
             </div>
@@ -71,11 +71,11 @@ const BudgetItem = ({ budget }) => {
         {/* Amount Details */}
         <div className="flex justify-between items-center text-sm">
           <div>
-            <span className="text-gray-900 dark:text-white font-semibold">
+            <span className="text-on-surface font-semibold">
               {formatCurrency(budget.spent || budget.actual)}
             </span>
-            <span className="text-gray-500 dark:text-gray-400"> of </span>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-on-surface-variant"> of </span>
+            <span className="text-on-surface-variant">
               {formatCurrency(budget.amount)}
             </span>
           </div>
@@ -83,7 +83,7 @@ const BudgetItem = ({ budget }) => {
             'font-semibold flex items-center space-x-1',
             isOverBudget 
               ? 'text-red-600 dark:text-red-400' 
-              : 'text-emerald-600 dark:text-emerald-400'
+              : 'text-secondary'
           )}>
             {isOverBudget ? (
               <>
@@ -111,7 +111,7 @@ export default function BudgetProgress({ budgets, showViewAll = true }) {
         action={
           <Link 
             to="/budgets/new"
-            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
+            className="inline-flex items-center px-4 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all duration-200"
           >
             Create Budget
             <ArrowRight className="w-4 h-4 ml-2" />
@@ -126,13 +126,13 @@ export default function BudgetProgress({ budgets, showViewAll = true }) {
       {/* Header */}
       {showViewAll && (
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-emerald-600" />
+          <h3 className="text-lg font-bold text-on-surface flex items-center">
+            <TrendingUp className="w-5 h-5 mr-2 text-secondary" />
             Budget Progress
           </h3>
           <Link 
             to="/budgets"
-            className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 flex items-center transition-colors duration-200"
+            className="text-sm font-semibold text-secondary hover:brightness-110 flex items-center transition-colors duration-200"
           >
             View All
             <ArrowRight className="w-4 h-4 ml-1" />

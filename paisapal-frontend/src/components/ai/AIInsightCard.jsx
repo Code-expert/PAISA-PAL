@@ -59,7 +59,7 @@ export default function AIInsightCard({ insight }) {
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-2xl border-2 ${colors.border} p-6 hover:shadow-xl transition-all duration-300 animate-in slide-in-from-bottom`}>
+    <div className={`bg-surface-container backdrop-blur-md rounded-3xl border-2 ${colors.border} p-6 hover:shadow-xl transition-all duration-300 animate-in slide-in-from-bottom`}>
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0">
           <div className={`p-4 ${colors.bg} rounded-2xl`}>
@@ -69,7 +69,7 @@ export default function AIInsightCard({ insight }) {
         
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between mb-3 gap-3">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+            <h3 className="text-lg font-bold text-on-surface">
               {insight.title}
             </h3>
             <Badge variant={getPriorityVariant(insight.priority)} size="sm">
@@ -77,14 +77,14 @@ export default function AIInsightCard({ insight }) {
             </Badge>
           </div>
           
-          <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+          <p className="text-on-surface-variant mb-4 leading-relaxed">
             {insight.description}
           </p>
           
           {insight.details && insight.details.length > 0 && (
             <ul className="space-y-2 mb-4">
               {insight.details.map((detail, index) => (
-                <li key={index} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <li key={index} className="flex items-start gap-2 text-sm text-on-surface">
                   <span className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${colors.bg}`} />
                   <span>{detail}</span>
                 </li>
@@ -92,16 +92,16 @@ export default function AIInsightCard({ insight }) {
             </ul>
           )}
           
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-outline-variant/30">
             {insight.confidence && (
               <div className="flex items-center gap-2">
-                <div className="w-full max-w-[120px] bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="w-full max-w-[120px] bg-outline-variant/50 rounded-full h-2">
                   <div 
                     className={`h-2 rounded-full ${colors.bg.replace('/30', '')}`}
                     style={{ width: `${Math.round(insight.confidence * 100)}%` }}
                   />
                 </div>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                <span className="text-xs font-medium text-on-surface-variant">
                   {Math.round(insight.confidence * 100)}%
                 </span>
               </div>

@@ -12,7 +12,7 @@ const ActionButton = ({ to, icon: Icon, title, description, gradient }) => {
   return (
     <Link
       to={to}
-      className="group block p-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 overflow-hidden relative"
+      className="group block p-4 bg-surface-container/40 backdrop-blur-md border-2 border-outline-variant/30 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 overflow-hidden relative"
     >
       {/* Gradient background on hover */}
       <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -23,10 +23,10 @@ const ActionButton = ({ to, icon: Icon, title, description, gradient }) => {
           <Icon className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-white transition-colors duration-300">
+          <h4 className="text-sm font-bold text-on-surface group-hover:text-white transition-colors duration-300">
             {title}
           </h4>
-          <p className="text-xs text-gray-600 dark:text-gray-400 group-hover:text-white/90 transition-colors duration-300 mt-1">
+          <p className="text-xs text-on-surface-variant group-hover:text-white/90 transition-colors duration-300 mt-1">
             {description}
           </p>
         </div>
@@ -42,7 +42,7 @@ export default function QuickActions() {
       icon: Plus,
       title: 'Add Transaction',
       description: 'Record income or expense',
-      gradient: 'from-emerald-500 to-teal-600'
+      gradient: 'from-primary to-secondary'
     },
     {
       to: '/receipts/uploads',
@@ -68,14 +68,14 @@ export default function QuickActions() {
   ]
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300">
+    <div className="bg-surface-container/40 backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 transition-all duration-300">
       {/* Header */}
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-          <Zap className="w-5 h-5 mr-2 text-emerald-600" />
+        <h3 className="text-lg font-bold text-on-surface flex items-center">
+          <Zap className="w-5 h-5 mr-2 text-secondary" />
           Quick Actions
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-on-surface-variant mt-1">
           Fast access to common tasks
         </p>
       </div>

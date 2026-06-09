@@ -79,14 +79,14 @@ export default function ProfilePage() {
     <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg">
+        <div className="p-3 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg">
           <User className="w-7 h-7 text-white" />
         </div>
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
             Profile Settings
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+          <p className="text-on-surface-variant text-sm sm:text-base">
             Manage your account information and preferences
           </p>
         </div>
@@ -94,8 +94,8 @@ export default function ProfilePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Picture Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+        <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
+          <h3 className="text-lg font-bold text-on-surface mb-6">
             Profile Picture
           </h3>
           
@@ -108,12 +108,12 @@ export default function ProfilePage() {
                   className="w-32 h-32 rounded-full object-cover border-4 border-emerald-100 dark:border-emerald-900 shadow-lg"
                 />
               ) : (
-                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-3xl font-bold shadow-lg">
                   {getInitials(user?.name)}
                 </div>
               )}
               
-              <label className="absolute bottom-0 right-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-3 rounded-full cursor-pointer hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl">
+              <label className="absolute bottom-0 right-0 bg-gradient-to-br from-primary to-secondary text-white p-3 rounded-full cursor-pointer hover:brightness-110 transition-all shadow-lg hover:shadow-xl">
                 <Camera className="w-4 h-4" />
                 <input
                   type="file"
@@ -125,10 +125,10 @@ export default function ProfilePage() {
             </div>
             
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white text-lg">
+              <h3 className="font-bold text-on-surface text-lg">
                 {user?.name}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 break-words">
+              <p className="text-sm text-on-surface-variant break-words">
                 {user?.email}
               </p>
               {user?.googleId && (
@@ -142,15 +142,15 @@ export default function ProfilePage() {
         </div>
 
         {/* Profile Information */}
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+        <div className="lg:col-span-2 bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
+          <h3 className="text-lg font-bold text-on-surface mb-6">
             Personal Information
           </h3>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-on-surface mb-2">
                   Full Name *
                 </label>
                 <div className="relative">
@@ -161,13 +161,13 @@ export default function ProfilePage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-on-surface mb-2">
                   Email *
                 </label>
                 <div className="relative">
@@ -179,7 +179,7 @@ export default function ProfilePage() {
                     onChange={handleInputChange}
                     required
                     disabled={user?.googleId}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full pl-10 pr-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -187,7 +187,7 @@ export default function ProfilePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-on-surface mb-2">
                   Phone Number
                 </label>
                 <div className="relative">
@@ -198,13 +198,13 @@ export default function ProfilePage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="+91 1234567890"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-on-surface mb-2">
                   Date of Birth
                 </label>
                 <div className="relative">
@@ -214,14 +214,14 @@ export default function ProfilePage() {
                     name="dateOfBirth"
                     value={formData.dateOfBirth}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-on-surface mb-2">
                 Occupation
               </label>
               <input
@@ -230,12 +230,12 @@ export default function ProfilePage() {
                 value={formData.occupation}
                 onChange={handleInputChange}
                 placeholder="Software Engineer, Teacher, etc."
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all"
+                className="w-full px-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-on-surface mb-2">
                 Bio
               </label>
               <textarea
@@ -244,14 +244,14 @@ export default function ProfilePage() {
                 value={formData.bio}
                 onChange={handleInputChange}
                 placeholder="Tell us about yourself..."
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all resize-none"
+                className="w-full px-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all resize-none"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary font-semibold rounded-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
             >
               {isLoading ? (
                 <>
@@ -270,48 +270,48 @@ export default function ProfilePage() {
       </div>
 
       {/* Account Security */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <Shield className="w-5 h-5 text-emerald-600" />
+      <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
+        <h3 className="text-lg font-bold text-on-surface mb-6 flex items-center gap-2">
+          <Shield className="w-5 h-5 text-secondary" />
           Account Security
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div className="p-4 bg-surface rounded-xl border border-outline-variant/30">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                 <Lock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <h4 className="font-semibold text-gray-900 dark:text-white">
+              <h4 className="font-semibold text-on-surface">
                 Password
               </h4>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm text-on-surface-variant mb-4">
               {user?.googleId 
                 ? 'You sign in with Google, so no password is needed.'
                 : 'Last changed 30 days ago'
               }
             </p>
             {!user?.googleId && (
-              <button className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+              <button className="text-sm font-semibold text-secondary hover:brightness-110 transition-colors">
                 Change Password →
               </button>
             )}
           </div>
 
-          <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div className="p-4 bg-surface rounded-xl border border-outline-variant/30">
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-                <Shield className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="p-2 bg-secondary/20 dark:bg-emerald-900/30 rounded-lg">
+                <Shield className="w-5 h-5 text-secondary" />
               </div>
-              <h4 className="font-semibold text-gray-900 dark:text-white">
+              <h4 className="font-semibold text-on-surface">
                 Two-Factor Authentication
               </h4>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm text-on-surface-variant mb-4">
               Add an extra layer of security to your account
             </p>
-            <button className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+            <button className="text-sm font-semibold text-secondary hover:brightness-110 transition-colors">
               Enable 2FA →
             </button>
           </div>

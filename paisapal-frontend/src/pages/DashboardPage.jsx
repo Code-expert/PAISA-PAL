@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react'
 import { 
   TrendingUp, Calendar, BarChart3, Target,
-  AlertCircle
+  AlertCircle, Download, Award
 } from 'lucide-react'
 import { useGetTransactionsQuery } from '../services/transactionApi'
 import { useGetBudgetsQuery } from '../services/budgetApi'
 import { useGetFinancialSummaryQuery } from '../services/financialApi'
 import { useGetBillRemindersQuery } from '../services/billReminderApi'
+import { toast } from 'react-hot-toast'
 import QuickStats from '../components/dashboard/QuickStats'
 import RecentTransactions from '../components/dashboard/RecentTransactions'
 import BudgetProgress from '../components/dashboard/BudgetProgress'
@@ -82,6 +83,34 @@ export default function DashboardPage() {
     }
   }, [transactions, selectedPeriod])
 
+  const handleExport = () => {
+    if (transactions.length === 0) {
+      toast.error('No transactions to export')
+      return
+    }
+
+    const csvData = transactions.map(t => ({
+      Date: new Date(t.date).toLocaleDateString(),
+      Type: t.type,
+      Category: t.category,
+      Description: t.description || '',
+      Amount: t.amount
+    }))
+    
+    const csvContent = "data:text/csv;charset=utf-8," + 
+      Object.keys(csvData[0]).join(",") + "\n" +
+      csvData.map(row => Object.values(row).join(",")).join("\n")
+    
+    const link = document.createElement("a")
+    link.setAttribute("href", encodeURI(csvContent))
+    link.setAttribute("download", `transactions_${selectedPeriod}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    toast.success('Transactions exported successfully', { icon: '📥' })
+  }
+
   const isLoading = transactionsLoading || budgetsLoading || summaryLoading
 
   if (isLoading) {
@@ -97,34 +126,44 @@ export default function DashboardPage() {
       {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tight">
             Financial Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">
+          <p className="text-on-surface-variant mt-1 text-sm sm:text-base">
             Track your expenses, monitor budgets, and achieve your financial goals
           </p>
         </div>
         
-        {/* Period Selector */}
-        <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 mt-4 sm:mt-0">
-          {[
-            { value: '7d', label: 'Week' },
-            { value: '30d', label: 'Month' },
-            { value: '90d', label: '3M' },
-            { value: '1y', label: 'Year' }
-          ].map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => setSelectedPeriod(value)}
-              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${
-                selectedPeriod === value
-                  ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-0">
+          <div className="flex bg-surface-container rounded-lg p-1 shadow-sm border border-outline-variant/20">
+            {[
+              { value: '7d', label: 'Week' },
+              { value: '30d', label: 'Month' },
+              { value: '90d', label: '3M' },
+              { value: '1y', label: 'Year' }
+            ].map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setSelectedPeriod(value)}
+                className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${
+                  selectedPeriod === value
+                    ? 'bg-surface text-on-surface shadow-sm ring-1 ring-outline-variant/30'
+                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          
+          <button
+            onClick={handleExport}
+            className="flex items-center justify-center px-4 py-2 bg-surface-container-highest text-on-surface font-semibold rounded-lg hover:bg-outline-variant transition-colors shadow-sm"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export CSV
+          </button>
         </div>
       </div>
       
@@ -133,27 +172,72 @@ export default function DashboardPage() {
       <QuickStats summary={financialMetrics} />
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Charts */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        {/* Left Column - Charts & Transactions */}
+        <div className="lg:col-span-2 space-y-8">
           <SpendingChart transactions={transactions} period={selectedPeriod} />
+          <RecentTransactions transactions={transactions.slice(0, 5)} />
           <MonthlyOverview transactions={transactions} budgets={budgets} />
           <CategoryBreakdown transactions={transactions} />
         </div>
 
-        {/* Right Column - Actions & Widgets */}
-        <div className="space-y-6">
+        {/* Right Column - Sidebar Widgets */}
+        <div className="space-y-8">
+          <FinancialHealthScore savingsRate={financialMetrics.savingsRate} />
+          <UpcomingBills />
+          <SmartInsights transactions={transactions} />
           <QuickActions />
           <BudgetProgress budgets={budgets} showViewAll={true} />
-          <RecentTransactions transactions={transactions.slice(0, 5)} />
           <FinancialGoals goals={[]} />
         </div>
       </div>
+    </div>
+  )
+}
 
-      {/* Bottom Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <SmartInsights transactions={transactions} />
-        <UpcomingBills />
+// Financial Health Score Component
+function FinancialHealthScore({ savingsRate }) {
+  const isExcellent = savingsRate >= 20;
+  const isGood = savingsRate >= 10 && savingsRate < 20;
+  
+  return (
+    <div className="bg-surface-container/40 backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 shadow-xl transition-all duration-300">
+      <h3 className="text-lg font-bold text-on-surface mb-6 flex items-center gap-2">
+        <Award className="w-5 h-5 text-secondary" />
+        Financial Health
+      </h3>
+      
+      <div className="space-y-6">
+        <div className="text-center">
+          <div className={`text-6xl font-extrabold mb-2 tracking-tighter ${
+            isExcellent ? 'text-green-500' :
+            isGood ? 'text-yellow-500' : 'text-error'
+          }`}>
+            {isExcellent ? 'A' : isGood ? 'B' : 'C'}
+          </div>
+          <p className="text-lg font-bold text-on-surface-variant">
+            {isExcellent ? '🎉 Excellent' : isGood ? '👍 Good' : '💡 Needs Improvement'}
+          </p>
+        </div>
+        
+        <div className="space-y-3">
+          <div className="flex justify-between text-sm font-semibold">
+            <span className="text-on-surface">
+              Savings Rate: {savingsRate.toFixed(1)}%
+            </span>
+            <span className={isExcellent ? 'text-green-500' : 'text-error'}>
+              Target: 20%
+            </span>
+          </div>
+          <div className="w-full bg-outline-variant/50 rounded-full h-3 overflow-hidden">
+            <div 
+              className={`h-full rounded-full transition-all duration-500 ${
+                isExcellent ? 'bg-green-500' : isGood ? 'bg-yellow-500' : 'bg-error'
+              }`}
+              style={{ width: `${Math.min(savingsRate, 100)}%` }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -204,32 +288,35 @@ function SmartInsights({ transactions }) {
   }, [transactions])
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center mb-6">
-        <BarChart3 className="w-5 h-5 mr-2 text-emerald-600" />
+    <div className="bg-gradient-to-br from-surface-container/80 to-surface-container-low/80 backdrop-blur-md p-6 rounded-3xl border border-outline-variant/20 shadow-xl transition-all duration-300">
+      <h3 className="text-lg font-bold text-on-surface flex items-center mb-6">
+        <BarChart3 className="w-5 h-5 mr-2 text-primary" />
         Smart Insights
       </h3>
       <div className="space-y-4">
         {insights.map((insight, index) => (
-          <div key={index} className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-1">
-                  <span className="text-xl">{insight.icon}</span>
-                  <h4 className="font-semibold text-gray-900 dark:text-white">
-                    {insight.title}
-                  </h4>
+          <div key={index} className="relative group cursor-pointer">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+            <div className="relative p-4 bg-surface-container-high rounded-2xl border border-outline-variant/30">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <span className="text-xl">{insight.icon}</span>
+                    <h4 className="font-semibold text-on-surface">
+                      {insight.title}
+                    </h4>
+                  </div>
+                  <p className="text-sm text-on-surface-variant mb-2">
+                    {insight.description}
+                  </p>
+                  <p className="text-lg font-bold text-primary">
+                    {insight.value}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  {insight.description}
-                </p>
-                <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                  {insight.value}
-                </p>
+                <button className="px-3 py-1.5 text-xs font-semibold bg-surface-container-highest text-on-surface rounded-lg hover:bg-surface-variant transition-colors duration-200">
+                  {insight.action}
+                </button>
               </div>
-              <button className="px-3 py-1.5 text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
-                {insight.action}
-              </button>
             </div>
           </div>
         ))}
@@ -245,14 +332,14 @@ function UpcomingBills() {
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center mb-6">
-          <Calendar className="w-5 h-5 mr-2 text-emerald-600" />
+      <div className="bg-surface-container/40 backdrop-blur-md rounded-3xl border border-outline-variant/20 p-6 shadow-xl">
+        <h3 className="text-lg font-bold text-on-surface flex items-center mb-6">
+          <Calendar className="w-5 h-5 mr-2 text-primary" />
           Upcoming Bills
         </h3>
         <div className="space-y-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div key={i} className="h-16 bg-surface-container-high rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -261,9 +348,9 @@ function UpcomingBills() {
 
   if (bills.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center mb-6">
-          <Calendar className="w-5 h-5 mr-2 text-emerald-600" />
+      <div className="bg-surface-container/40 backdrop-blur-md rounded-3xl border border-outline-variant/20 p-6 shadow-xl">
+        <h3 className="text-lg font-bold text-on-surface flex items-center mb-6">
+          <Calendar className="w-5 h-5 mr-2 text-primary" />
           Upcoming Bills
         </h3>
         <EmptyState 
@@ -273,7 +360,7 @@ function UpcomingBills() {
           action={
             <Link 
               to="/bills/new"
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
+              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary to-primary-container text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all duration-200"
             >
               Add Bill Reminder
             </Link>
@@ -284,43 +371,48 @@ function UpcomingBills() {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center mb-6">
-        <Calendar className="w-5 h-5 mr-2 text-emerald-600" />
+    <div className="bg-surface-container/40 backdrop-blur-md rounded-3xl border border-outline-variant/20 p-6 shadow-xl transition-all duration-300">
+      <h3 className="text-lg font-bold text-on-surface flex items-center mb-6">
+        <Calendar className="w-5 h-5 mr-2 text-primary" />
         Upcoming Bills
       </h3>
-      <div className="space-y-3">
+      <div className="space-y-4">
         {bills.slice(0, 4).map((bill) => {
           const daysUntilDue = Math.ceil((new Date(bill.dueDate) - new Date()) / (1000 * 60 * 60 * 24))
           const isOverdue = daysUntilDue < 0
           const isDueSoon = daysUntilDue <= 3 && daysUntilDue >= 0
           
           return (
-            <div key={bill._id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200">
-              <div className="flex-1">
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  {bill.name}
-                </p>
-                <div className="flex items-center space-x-2 mt-1">
-                  {(isOverdue || isDueSoon) && (
-                    <AlertCircle className="w-3.5 h-3.5 text-red-500" />
-                  )}
-                  <p className={`text-sm font-medium ${
-                    isOverdue ? 'text-red-600 dark:text-red-400' :
-                    isDueSoon ? 'text-yellow-600 dark:text-yellow-400' :
-                    'text-gray-600 dark:text-gray-400'
-                  }`}>
-                    {isOverdue 
-                      ? `Overdue by ${Math.abs(daysUntilDue)} days`
-                      : daysUntilDue === 0
-                      ? 'Due today'
-                      : `Due in ${daysUntilDue} days`
-                    }
+            <div key={bill._id} className="p-4 bg-surface-container rounded-2xl flex justify-between items-center group cursor-pointer hover:bg-surface-container-high transition-all">
+              <div className="flex-1 flex items-center gap-3">
+                <div className="w-10 h-10 bg-surface-container-highest rounded-xl flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-on-surface">
+                    {bill.name}
                   </p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    {(isOverdue || isDueSoon) && (
+                      <AlertCircle className="w-3.5 h-3.5 text-error" />
+                    )}
+                    <p className={`text-[10px] font-label uppercase tracking-widest ${
+                      isOverdue ? 'text-error' :
+                      isDueSoon ? 'text-tertiary-container' :
+                      'text-on-surface-variant'
+                    }`}>
+                      {isOverdue 
+                        ? `Overdue by ${Math.abs(daysUntilDue)} days`
+                        : daysUntilDue === 0
+                        ? 'Due today'
+                        : `Due in ${daysUntilDue} days`
+                      }
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="text-right ml-4">
-                <p className="font-bold text-gray-900 dark:text-white">
+              <div className="text-right">
+                <p className="text-sm font-bold text-on-surface">
                   ₹{bill.amount.toFixed(0)}
                 </p>
                 <Badge 
@@ -337,7 +429,7 @@ function UpcomingBills() {
       </div>
       <Link 
         to="/bills"
-        className="w-full mt-4 flex items-center justify-center px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200"
+        className="w-full mt-6 flex items-center justify-center py-3 rounded-xl border border-dashed border-outline-variant text-on-surface-variant text-sm font-medium hover:border-primary/50 hover:text-on-surface transition-all"
       >
         View All Bills
       </Link>

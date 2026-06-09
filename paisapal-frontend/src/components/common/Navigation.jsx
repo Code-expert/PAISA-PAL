@@ -37,7 +37,7 @@ export default function Navigation() {
   }
 
   return (
-    <header className="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-sm border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    <header className="sticky top-0 z-30 bg-surface/80 backdrop-blur-lg shadow-sm border-b border-outline-variant transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left Section */}
@@ -45,7 +45,7 @@ export default function Navigation() {
             {/* Mobile menu button */}
             <button
               onClick={handleSidebarToggle}
-              className="p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container lg:hidden transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary"
               aria-label="Toggle sidebar"
             >
               <Menu className="h-6 w-6" />
@@ -59,7 +59,7 @@ export default function Navigation() {
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-transparent sm:text-sm transition-all duration-200"
+                  className="block w-full pl-10 pr-3 py-2 border border-outline-variant rounded-xl bg-surface-container placeholder-outline text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent sm:text-sm transition-all duration-200"
                   placeholder="Search transactions, budgets..."
                 />
               </div>
@@ -68,7 +68,7 @@ export default function Navigation() {
             {/* Mobile Search Toggle */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="md:hidden ml-2 p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+              className="md:hidden ml-2 p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-200"
               aria-label="Toggle search"
             >
               {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
@@ -84,7 +84,7 @@ export default function Navigation() {
             <div className="relative">
               <Link
                 to="/notifications"
-                className="relative p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="relative inline-flex items-center justify-center p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary"
                 aria-label={`Notifications ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}`}
               >
                 <Bell className="h-5 w-5" />
@@ -100,7 +100,7 @@ export default function Navigation() {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)} // ✅ Add click handler
-                className="flex items-center space-x-2 sm:space-x-3 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                className="flex items-center space-x-2 sm:space-x-3 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary p-1.5 hover:bg-surface-container transition-all duration-200"
                 aria-label="User menu"
               >
                 {user?.avatar || user?.photo ? (
@@ -110,8 +110,8 @@ export default function Navigation() {
                     alt={user.name}
                   />
                 ) : (
-                  <div className="h-9 w-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center ring-2 ring-gray-200 dark:ring-gray-700 shadow-sm">
-                    <User className="h-5 w-5 text-white" />
+                  <div className="h-9 w-9 bg-surface-container-highest rounded-xl flex items-center justify-center ring-2 ring-outline-variant shadow-sm">
+                    <User className="h-5 w-5 text-on-surface" />
                   </div>
                 )}
                 <span className="hidden sm:block text-gray-700 dark:text-gray-200 font-semibold max-w-[120px] truncate">
@@ -131,16 +131,16 @@ export default function Navigation() {
                     onClick={() => setDropdownOpen(false)}
                   />
 
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-2xl border border-outline-variant py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                     {/* User Info Header */}
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                    <div className="px-4 py-3 border-b border-outline-variant/30">
+                      <p className="text-sm font-semibold text-on-surface truncate">
                         {typeof user?.name === 'string'
                           ? user.name
                           : `${user?.name?.givenName || ''} ${user?.name?.familyName || ''}`.trim() || 'User'
                         }
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                      <p className="text-xs text-on-surface-variant truncate mt-0.5">
                         {user?.email}
                       </p>
                     </div>
@@ -150,7 +150,7 @@ export default function Navigation() {
                       <Link
                         to="/profile"
                         onClick={() => setDropdownOpen(false)} // ✅ Close on click
-                        className="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                        className="block px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors duration-150"
                       >
                         <span className="flex items-center">
                           <User className="h-4 w-4 mr-3 text-gray-400" />
@@ -160,7 +160,7 @@ export default function Navigation() {
                       <Link
                         to="/settings"
                         onClick={() => setDropdownOpen(false)} // ✅ Close on click
-                        className="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                        className="block px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors duration-150"
                       >
                         <span className="flex items-center">
                           <svg className="h-4 w-4 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -173,7 +173,7 @@ export default function Navigation() {
                     </div>
 
                     {/* Logout Button */}
-                    <div className="border-t border-gray-200 dark:border-gray-700 pt-1">
+                    <div className="border-t border-outline-variant pt-1">
                       <button
                         onClick={() => {
                           handleLogout()
@@ -208,7 +208,7 @@ export default function Navigation() {
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all duration-200"
+              className="block w-full pl-10 pr-3 py-2 border border-outline-variant rounded-xl bg-surface-container placeholder-outline text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm transition-all duration-200"
               placeholder="Search transactions, budgets..."
               autoFocus
             />

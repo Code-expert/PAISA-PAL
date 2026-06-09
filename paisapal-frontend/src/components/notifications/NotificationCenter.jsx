@@ -86,11 +86,11 @@ function NotificationItem({ notification, onMarkAsRead, onDelete }) {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <h4 className={`text-sm font-medium ${
-                  !notification.isRead ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                  !notification.isRead ? 'text-on-surface' : 'text-on-surface'
                 }`}>
                   {notification.title}
                 </h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-sm text-on-surface-variant mt-1">
                   {notification.message}
                 </p>
                 
@@ -136,7 +136,7 @@ function NotificationItem({ notification, onMarkAsRead, onDelete }) {
 
             {/* Action Menu */}
             {showActions && (
-              <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="mt-3 pt-3 border-t border-outline-variant/30">
                 <div className="flex items-center space-x-2">
                   {!notification.isRead && (
                     <Button
@@ -183,7 +183,7 @@ export default function NotificationCenter() {
   const [markAsRead] = useMarkAsReadMutation()
   // const [deleteNotification] = useDeleteNotificationMutation()
 
-  const notifications = data?.notifications || []
+  const notifications = data?.data || []
   const unreadCount = notifications.filter(n => !n.isRead).length
 
   // Filter notifications
@@ -249,12 +249,12 @@ export default function NotificationCenter() {
       {/* Header */}
       {/* <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center space-x-3">
-          <Bell className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+          <Bell className="w-6 h-6 text-on-surface-variant" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-on-surface">
               Notifications
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-on-surface-variant">
               {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount !== 1 ? 's' : ''}` : 'All caught up!'}
             </p>
           </div>
@@ -372,7 +372,7 @@ function NotificationSettings({ isOpen, onClose }) {
     <Modal isOpen={isOpen} onClose={onClose} title="Notification Settings">
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+          <h3 className="text-lg font-medium text-on-surface mb-4">
             Notification Types
           </h3>
           
@@ -386,10 +386,10 @@ function NotificationSettings({ isOpen, onClose }) {
             ].map((item) => (
               <div key={item.key} className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-on-surface">
                     {item.label}
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-on-surface-variant">
                     {item.description}
                   </p>
                 </div>
@@ -408,7 +408,7 @@ function NotificationSettings({ isOpen, onClose }) {
         </div>
 
         <div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+          <h3 className="text-lg font-medium text-on-surface mb-4">
             Delivery Methods
           </h3>
           
@@ -420,10 +420,10 @@ function NotificationSettings({ isOpen, onClose }) {
             ].map((item) => (
               <div key={item.key} className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-on-surface">
                     {item.label}
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-on-surface-variant">
                     {item.description}
                   </p>
                 </div>

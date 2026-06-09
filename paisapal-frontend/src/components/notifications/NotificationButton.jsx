@@ -50,7 +50,7 @@ export default function NotificationButton() {
     <button
       onClick={handleEnableNotifications}
       disabled={isLoading}
-      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 transition-all"
+      className="flex items-center space-x-2 px-4 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 disabled:opacity-50 transition-all"
     >
       <Bell className="w-4 h-4" />
       <span>{isLoading ? 'Enabling...' : 'Enable Notifications'}</span>

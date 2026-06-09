@@ -14,11 +14,17 @@ async function generateWithRetry(model, prompt, maxRetries = 3) {
       const result = await model.generateContent(prompt);
       return result;
     } catch (error) {
-      const is429 = error.message?.includes('429') || error.message?.includes('quota');
+      const isRetryable = error.message?.includes('429') || 
+                          error.message?.includes('quota') || 
+                          error.message?.includes('503') ||
+                          error.message?.includes('500');
       
-      if (is429 && attempt < maxRetries - 1) {
+      if (isRetryable && attempt < maxRetries - 1) {
         const delay = 3000 * Math.pow(2, attempt); // 3s, 6s, 12s
-        console.log(`Rate limited. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+        console.log(`API overloaded (${error.message}). Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+        
+        // If it's a 503, maybe the flash model is down. We could theoretically switch models,
+        // but for now we just retry with exponential backoff.
         await new Promise(resolve => setTimeout(resolve, delay));
       } else {
         throw error;
@@ -33,33 +39,69 @@ export const chatWithAI = catchAsync(async (req, res) => {
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
   
   const prompt = `
-    You are a helpful financial assistant for PaisaPal app.
+    You are a helpful financial assistant for the PaisaPal app.
     User's Financial Context: ${JSON.stringify(context)}
-    User Question: ${message}
+    User Question/Command: "${message}"
     
-    Provide helpful, personalized financial advice based on their data.
-    Keep responses concise but informative.
+    INSTRUCTIONS:
+    If the user is asking a general question or asking for advice, provide a helpful, conversational response. Keep it concise. Do NOT output JSON.
+    
+    CRITICAL: If the user is asking to log/add an expense, transaction, or income (e.g. "I spent 500 on an uber", "Got 50000 salary"), you MUST reply with ONLY a JSON object and absolutely no other text, markdown, or greetings.
+    Format exactly like this:
+    {"action": "CREATE_TRANSACTION", "amount": 500, "category": "Transportation", "description": "Uber", "type": "expense"}
+    
+    Valid categories: Food & Dining, Shopping, Transportation, Entertainment, Healthcare, Utilities, Income, Other.
   `;
   
-  // ✅ CHANGED: Use retry logic
-  const result = await generateWithRetry(model, prompt);
-  const response = await result.response;
-  const aiReply = response.text();
+  let finalMessage = "";
+  let isTransactionCreated = false;
+
+  try {
+    const result = await generateWithRetry(model, prompt);
+    const response = await result.response;
+    const aiReplyRaw = response.text();
+    finalMessage = aiReplyRaw;
+    
+    try {
+      const cleanJson = aiReplyRaw.replace(/```json/g, '').replace(/```/g, '').trim();
+      const parsed = JSON.parse(cleanJson);
+      
+      if (parsed.action === 'CREATE_TRANSACTION') {
+        await Transaction.create({
+          user: req.user.id,
+          amount: parsed.amount,
+          type: parsed.type || 'expense',
+          category: parsed.category || 'Other',
+          description: parsed.description || 'AI Logged Expense',
+          date: new Date(),
+          source: 'ai_chat'
+        });
+        finalMessage = `✅ I have automatically logged ₹${parsed.amount} under **${parsed.category}** (${parsed.description}).`;
+        isTransactionCreated = true;
+      }
+    } catch (e) {
+      // Not a valid JSON, which means it's a conversational reply. Proceed normally.
+    }
+  } catch (error) {
+    console.error("AI Chat generation failed:", error);
+    finalMessage = "I'm sorry, I am currently experiencing high demand and cannot process your request right now. Please try again in a few minutes.";
+  }
 
   const insight = await Insight.create({
     user: req.user.id,
     messages: [{ role: 'user', content: message }],
-    aiReply,
+    aiReply: finalMessage,
   });
 
-  await sendPush(req.user.id, 'New AI Insight', aiReply.slice(0, 100), '/insights');
+  await sendPush(req.user.id, 'New AI Insight', finalMessage.slice(0, 100), '/insights');
 
   res.json({ 
     success: true, 
-    message: aiReply,
+    message: finalMessage,
+    transactionCreated: isTransactionCreated,
     suggestions: [
       "How much did I spend this month?",
-      "What's my biggest expense category?",
+      "Log ₹400 for dinner with friends",
       "Can you suggest a budget for entertainment?"
     ]
   });
@@ -102,7 +144,10 @@ export const getAIInsights = catchAsync(async (req, res) => {
     // ✅ CHANGED: Use retry logic
     const result = await generateWithRetry(model, prompt);
     const response = await result.response;
-    const aiResponse = JSON.parse(response.text());
+    const responseText = await response.text();
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in response");
+    const aiResponse = JSON.parse(jsonMatch[0]);
     
     res.json(aiResponse);
   } catch (error) {
@@ -154,7 +199,10 @@ export const getPersonalizedTips = catchAsync(async (req, res) => {
     // ✅ CHANGED: Use retry logic
     const result = await generateWithRetry(model, prompt);
     const response = await result.response;
-    const tips = JSON.parse(response.text());
+    const responseText = await response.text();
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in response");
+    const tips = JSON.parse(jsonMatch[0]);
     
     res.json(tips);
   } catch (error) {
@@ -208,7 +256,10 @@ export const getPredictions = catchAsync(async (req, res) => {
     // ✅ CHANGED: Use retry logic
     const result = await generateWithRetry(model, prompt);
     const response = await result.response;
-    const predictions = JSON.parse(response.text());
+    const responseText = await response.text();
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in response");
+    const predictions = JSON.parse(jsonMatch[0]);
     
     res.json(predictions);
   } catch (error) {
@@ -232,4 +283,60 @@ export const getPredictions = catchAsync(async (req, res) => {
 export const getLatestInsight = catchAsync(async (req, res) => {
   const insight = await Insight.findOne({ user: req.user.id }).sort({ createdAt: -1 });
   res.json({ success: true, insight });
+});
+
+export const generateMonthlyReport = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  
+  // Get start and end of current month
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const transactions = await Transaction.find({ 
+    user: userId,
+    date: { $gte: startOfMonth, $lte: endOfMonth }
+  });
+  
+  const budgets = await Budget.find({ user: userId });
+  
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  
+  const prompt = `
+    You are an expert financial advisor. Generate a detailed monthly financial report based on the following data for this month:
+    
+    Transactions: ${JSON.stringify(transactions)}
+    Budgets: ${JSON.stringify(budgets)}
+    
+    You must respond ONLY with this exact JSON format. Do not use conversational text.
+    {
+      "executiveSummary": "A concise paragraph summarizing their overall financial health this month.",
+      "grade": "A+", // (or A, B, C, D, F) based on how well they stuck to budgets
+      "biggestDrain": "Name of the category or specific habit draining the most money, with a brief explanation.",
+      "savingsOpportunity": "A highly specific, actionable tip to save money next month.",
+      "topCategories": [
+        { "name": "Food", "amount": 500, "status": "over_budget" } // status can be over_budget, under_budget, or on_track
+      ]
+    }
+  `;
+
+  try {
+    const result = await generateWithRetry(model, prompt);
+    const response = await result.response;
+    const responseText = await response.text();
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in response");
+    const report = JSON.parse(jsonMatch[0]);
+    
+    res.json(report);
+  } catch (error) {
+    console.error('AI Monthly Report Error:', error);
+    res.json({
+      executiveSummary: "We couldn't generate your personalized AI report due to high server demand. Your raw data is still securely logged.",
+      grade: "N/A",
+      biggestDrain: "Data unavailable",
+      savingsOpportunity: "Please try generating the report again later.",
+      topCategories: []
+    });
+  }
 });

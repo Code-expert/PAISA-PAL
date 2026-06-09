@@ -47,13 +47,13 @@ export default function Modal({
       onClick={handleBackdropClick}
     >
       <div className={`
-        bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full ${sizeClasses[size]}
+        bg-surface-container backdrop-blur-md rounded-3xl shadow-xl w-full ${sizeClasses[size]}
         max-h-[90vh] overflow-hidden flex flex-col
         transform transition-all duration-200 ease-out
       `}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <div className="flex items-center justify-between p-4 border-b border-outline-variant/30">
+          <h3 className="text-lg font-semibold text-on-surface">
             {title}
           </h3>
           <button

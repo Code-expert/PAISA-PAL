@@ -66,13 +66,13 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+    <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <Briefcase className="w-6 h-6 text-emerald-600" />
+        <h3 className="text-xl font-bold text-on-surface flex items-center gap-2">
+          <Briefcase className="w-6 h-6 text-secondary" />
           {isEditing ? 'Edit Investment' : 'Add New Investment'}
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-on-surface-variant mt-1">
           Track your investment portfolio performance
         </p>
       </div>
@@ -81,15 +81,15 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
         {/* Symbol and Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Symbol / Ticker
             </label>
             <input
               type="text"
               placeholder="AAPL, MSFT, BTC, etc."
               className={`w-full px-4 py-3 border ${
-                errors.symbol ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all uppercase`}
+                errors.symbol ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all uppercase`}
               {...register('symbol', { required: 'Symbol is required' })}
             />
             {errors.symbol && (
@@ -98,15 +98,15 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
           </div>
           
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Investment Name
             </label>
             <input
               type="text"
               placeholder="Apple Inc., Bitcoin, etc."
               className={`w-full px-4 py-3 border ${
-                errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                errors.name ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
               {...register('name', { required: 'Name is required' })}
             />
             {errors.name && (
@@ -118,13 +118,13 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
         {/* Type and Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Investment Type
             </label>
             <select
               className={`w-full px-4 py-3 border ${
-                errors.type ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                errors.type ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
               {...register('type', { required: 'Type is required' })}
             >
               {INVESTMENT_TYPES.map(type => (
@@ -137,7 +137,7 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
           </div>
           
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Purchase Date
             </label>
             <div className="relative">
@@ -145,8 +145,8 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
               <input
                 type="date"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.purchaseDate ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                  errors.purchaseDate ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
                 {...register('purchaseDate', { required: 'Purchase date is required' })}
               />
             </div>
@@ -159,7 +159,7 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
         {/* Quantity and Prices */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Quantity
             </label>
             <div className="relative">
@@ -170,8 +170,8 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
                 min="0"
                 placeholder="0"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.quantity ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                  errors.quantity ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
                 {...register('quantity', {
                   required: 'Quantity is required',
                   min: { value: 0.00001, message: 'Quantity must be greater than 0' }
@@ -184,7 +184,7 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Purchase Price
             </label>
             <div className="relative">
@@ -195,8 +195,8 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
                 min="0"
                 placeholder="0.00"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.purchasePrice ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                  errors.purchasePrice ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
                 {...register('purchasePrice', {
                   required: 'Purchase price is required',
                   min: { value: 0.01, message: 'Price must be greater than 0' }
@@ -209,7 +209,7 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Current Price
             </label>
             <div className="relative">
@@ -220,8 +220,8 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
                 min="0"
                 placeholder="0.00"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.currentPrice ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all`}
+                  errors.currentPrice ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all`}
                 {...register('currentPrice', {
                   required: 'Current price is required',
                   min: { value: 0.01, message: 'Price must be greater than 0' }
@@ -243,11 +243,11 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-outline-variant/30">
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+            className="flex-1 flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
           >
             {isLoading ? (
               <>
@@ -266,7 +266,7 @@ export default function InvestmentForm({ onSuccess, onCancel, initialData = null
             <button
               type="button"
               onClick={onCancel}
-              className="sm:w-auto px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              className="sm:w-auto px-6 py-3 bg-surface-container-highest text-on-surface font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
             >
               Cancel
             </button>

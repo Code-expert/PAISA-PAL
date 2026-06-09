@@ -23,7 +23,7 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`
+  callbackURL: `${process.env.BACKEND_URL || (process.env.NODE_ENV === 'production' ? 'https://paisa-pal.onrender.com' : 'http://localhost:5000')}/api/auth/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const email = profile.emails[0].value;
@@ -62,17 +62,21 @@ export const googleAuth = passport.authenticate('google', {
 
 export const googleAuthCallback = (req, res, next) => {
   passport.authenticate('google', (err, user) => {
+    const isProd = process.env.NODE_ENV === 'production';
+    const defaultFrontend = isProd ? 'https://paisa-pal-ten.vercel.app' : 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL?.replace(/\/$/, '') || defaultFrontend;
+    
     if (err) {
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/login?error=auth_failed`);
+      return res.redirect(`${frontendUrl}/auth/login?error=auth_failed`);
     }
     
     if (!user) {
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/login?error=no_user`);
+      return res.redirect(`${frontendUrl}/auth/login?error=no_user`);
     }
     
     req.logIn(user, (err) => {
       if (err) {
-        return res.redirect(`${process.env.FRONTEND_URL}/auth/login?error=login_failed`);
+        return res.redirect(`${frontendUrl}/auth/login?error=login_failed`);
       }
       
       const token = generateToken(user);
@@ -85,7 +89,7 @@ export const googleAuthCallback = (req, res, next) => {
         googleId: user.googleId
       }));
       
-      res.redirect(`${process.env.FRONTEND_URL}/auth/google/callback?token=${token}&user=${userData}`);
+      res.redirect(`${frontendUrl}/auth/google/callback?token=${token}&user=${userData}`);
     });
   })(req, res, next);
 };

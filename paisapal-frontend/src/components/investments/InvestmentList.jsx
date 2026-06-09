@@ -60,13 +60,13 @@ export default function InvestmentList({ investments = [], onEdit }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-emerald-600" />
+    <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 overflow-hidden">
+      <div className="px-6 py-4 border-b border-outline-variant/30">
+        <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
+          <Briefcase className="w-5 h-5 text-secondary" />
           Investment Holdings
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-on-surface-variant mt-1">
           {investments.length} investment{investments.length !== 1 ? 's' : ''} in your portfolio
         </p>
       </div>
@@ -75,12 +75,12 @@ export default function InvestmentList({ investments = [], onEdit }) {
         {investments.length === 0 ? (
           <div className="text-center py-12">
             <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 dark:text-gray-400 mb-4 text-lg">
+            <p className="text-on-surface-variant mb-4 text-lg">
               No investments added yet
             </p>
             <button
               onClick={() => onEdit(null)}
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-lg hover:brightness-110 transition-all shadow-lg"
             >
               Add Your First Investment
             </button>
@@ -89,29 +89,29 @@ export default function InvestmentList({ investments = [], onEdit }) {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+                <tr className="border-b border-outline-variant/30">
+                  <th className="px-4 py-3 text-left font-semibold text-on-surface">
                     Symbol
                   </th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 text-left font-semibold text-on-surface">
                     Name
                   </th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 text-left font-semibold text-on-surface">
                     Type
                   </th>
-                  <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 text-right font-semibold text-on-surface">
                     Quantity
                   </th>
-                  <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 text-right font-semibold text-on-surface">
                     Current Value
                   </th>
-                  <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 text-right font-semibold text-on-surface">
                     Gain/Loss
                   </th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 text-left font-semibold text-on-surface">
                     Date
                   </th>
-                  <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                  <th className="px-4 py-3 text-center font-semibold text-on-surface">
                     Actions
                   </th>
                 </tr>
@@ -130,34 +130,34 @@ export default function InvestmentList({ investments = [], onEdit }) {
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           <span className="text-xl">{getTypeEmoji(investment.type)}</span>
-                          <span className="font-bold text-gray-900 dark:text-white uppercase">
+                          <span className="font-bold text-on-surface uppercase">
                             {investment.symbol}
                           </span>
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="text-gray-700 dark:text-gray-300 max-w-40 truncate">
+                        <div className="text-on-surface max-w-40 truncate">
                           {investment.name}
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 capitalize">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-surface-container-highest text-on-surface capitalize">
                           {investment.type.replace('_', ' ')}
                         </span>
                       </td>
                       <td className="px-4 py-4 text-right">
-                        <div className="font-semibold text-gray-900 dark:text-white">
+                        <div className="font-semibold text-on-surface">
                           {investment.quantity}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-xs text-on-surface-variant">
                           @ {formatCurrency(investment.currentPrice)}
                         </div>
                       </td>
                       <td className="px-4 py-4 text-right">
-                        <div className="font-bold text-gray-900 dark:text-white">
+                        <div className="font-bold text-on-surface">
                           {formatCurrency(currentValue)}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-xs text-on-surface-variant">
                           Cost: {formatCurrency(investment.purchasePrice * investment.quantity)}
                         </div>
                       </td>
@@ -185,7 +185,7 @@ export default function InvestmentList({ investments = [], onEdit }) {
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="text-gray-700 dark:text-gray-300">
+                        <div className="text-on-surface">
                           {format(new Date(investment.purchaseDate), 'dd MMM yyyy')}
                         </div>
                       </td>
@@ -196,7 +196,7 @@ export default function InvestmentList({ investments = [], onEdit }) {
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors"
                             title="Edit investment"
                           >
-                            <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                            <Edit2 className="w-4 h-4 text-on-surface-variant" />
                           </button>
                           <button
                             onClick={() => handleDelete(investment)}

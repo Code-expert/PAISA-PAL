@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Search, Download, Trash2, Eye, Link as LinkIcon, Calendar, FileText, RefreshCw } from 'lucide-react'
+import { Search, Download, Trash2, Eye, Link as LinkIcon, Calendar, FileText, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useGetReceiptsQuery, useDeleteReceiptMutation } from '../../services/receiptApi'
 import { format } from 'date-fns'
 import { toast } from 'react-hot-toast'
@@ -50,6 +50,34 @@ export default function ReceiptGallery() {
     return matchesSearch && matchesCategory
   })
 
+  // Pagination Logic
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, selectedCategory])
+
+  const totalItems = filteredReceipts.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentReceipts = filteredReceipts.slice(startIndex, endIndex)
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   const handleViewReceipt = (receipt) => {
     setSelectedReceipt(receipt)
     setIsViewModalOpen(true)
@@ -87,15 +115,15 @@ export default function ReceiptGallery() {
     }).format(amount)
   }
 
-  const categories = ['all', 'Food & Dining', 'transport', 'shopping', 'utilities', 'healthcare', 'entertainment', 'other']
+  const categories = ['all', 'food', 'transportation', 'shopping', 'utilities', 'healthcare', 'entertainment', 'other']
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
+      <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-8">
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-400">Loading receipts...</p>
+            <p className="text-on-surface-variant">Loading receipts...</p>
           </div>
         </div>
       </div>
@@ -104,14 +132,14 @@ export default function ReceiptGallery() {
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold text-on-surface">
               Receipt Gallery
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-on-surface-variant mt-1">
               {filteredReceipts.length} of {receipts.length} receipt{receipts.length !== 1 ? 's' : ''}
             </p>
           </div>
@@ -125,7 +153,7 @@ export default function ReceiptGallery() {
                 placeholder="Search receipts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 border border-outline-variant/50 rounded-xl bg-white dark:bg-gray-700 text-on-surface placeholder-gray-400 focus:ring-2 focus:ring-secondary focus:border-secondary transition-all"
               />
             </div>
 
@@ -133,7 +161,7 @@ export default function ReceiptGallery() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+              className="px-4 py-2.5 border border-outline-variant/50 rounded-xl bg-white dark:bg-gray-700 text-on-surface focus:ring-2 focus:ring-secondary focus:border-secondary transition-all"
             >
               {categories.map(category => (
                 <option key={category} value={category}>
@@ -145,7 +173,7 @@ export default function ReceiptGallery() {
             {/* Refresh Button */}
             <button
               onClick={() => refetch()}
-              className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all"
+              className="p-2.5 border border-outline-variant/50 rounded-xl bg-white dark:bg-gray-700 text-on-surface-variant hover:bg-gray-50 dark:hover:bg-gray-600 transition-all"
               title="Refresh"
             >
               <RefreshCw className="w-5 h-5" />
@@ -156,13 +184,13 @@ export default function ReceiptGallery() {
         {/* Gallery Grid */}
         {filteredReceipts.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 bg-surface-container-highest rounded-full flex items-center justify-center mx-auto mb-4">
               <Eye className="w-10 h-10 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg font-semibold text-on-surface mb-2">
               No receipts found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-on-surface-variant">
               {searchTerm || selectedCategory !== 'all'
                 ? 'Try adjusting your search or filter criteria'
                 : 'Upload your first receipt to get started'
@@ -170,117 +198,152 @@ export default function ReceiptGallery() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredReceipts.map((receipt, index) => (
-              <div
-                key={receipt._id}
-                className="group relative bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 animate-in slide-in-from-bottom"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                {/* Receipt Preview */}
-                <div className="aspect-[3/4] bg-white dark:bg-gray-800 relative overflow-hidden">
-                  {receipt.fileType?.startsWith('image/') ? (
-                    <img
-                      src={getImageUrl(receipt.fileUrl)}
-                      alt={receipt.filename}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        console.error('Image failed to load:', receipt.fileUrl)
-                        if (!e.target.dataset.fallback) {
-                          e.target.dataset.fallback = 'true'
-                          e.target.style.display = 'none'
-                          const parent = e.target.parentElement
-                          if (parent && !parent.querySelector('.fallback-icon')) {
-                            const fallbackDiv = document.createElement('div')
-                            fallbackDiv.className = 'w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 fallback-icon'
-                            fallbackDiv.innerHTML = `
-                              <div class="text-center">
-                                <svg class="w-16 h-16 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <p class="text-sm text-gray-500 mt-2">Image unavailable</p>
-                              </div>
-                            `
-                            parent.appendChild(fallbackDiv)
-                          }
-                        }
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-xl flex items-center justify-center mx-auto mb-3">
-                          <FileText className="w-8 h-8 text-red-600 dark:text-red-400" />
+          <>
+            <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-outline-variant/30 text-on-surface-variant text-sm">
+                  <th className="py-3 px-4 font-semibold whitespace-nowrap">Date</th>
+                  <th className="py-3 px-4 font-semibold whitespace-nowrap">Filename / Merchant</th>
+                  <th className="py-3 px-4 font-semibold whitespace-nowrap">Category</th>
+                  <th className="py-3 px-4 font-semibold text-right whitespace-nowrap">Amount</th>
+                  <th className="py-3 px-4 font-semibold text-center whitespace-nowrap">Status</th>
+                  <th className="py-3 px-4 font-semibold text-right whitespace-nowrap">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-outline-variant/20">
+                {currentReceipts.map((receipt, index) => (
+                  <tr 
+                    key={receipt._id}
+                    className="hover:bg-surface-container-highest/50 transition-colors animate-in slide-in-from-bottom"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <td className="py-3 px-4 text-sm text-on-surface whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Calendar className="w-3.5 h-3.5 mr-2 text-on-surface-variant" />
+                        {format(new Date(receipt.createdAt || receipt.uploadDate), 'MMM dd, yyyy')}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 min-w-[200px]">
+                      <div className="font-semibold text-on-surface text-sm truncate max-w-[250px]" title={receipt.filename}>{receipt.filename}</div>
+                      {receipt.merchant && (
+                        <div className="text-xs text-on-surface-variant mt-0.5">{receipt.merchant}</div>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      {receipt.category ? (
+                        <Badge variant="secondary" size="sm">{receipt.category}</Badge>
+                      ) : (
+                        <span className="text-xs text-on-surface-variant">-</span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      {receipt.amount ? (
+                        <span className="font-semibold text-on-surface">
+                          {formatCurrency(receipt.amount)}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-on-surface-variant">-</span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 text-center whitespace-nowrap">
+                      {receipt.linkedTransaction ? (
+                        <div className="inline-flex items-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
+                          <LinkIcon className="w-3 h-3 mr-1" />
+                          Linked
                         </div>
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">PDF Document</p>
+                      ) : (
+                        <div className="inline-flex items-center text-xs text-on-surface-variant bg-surface-container-highest px-2 py-1 rounded-full">
+                          Unlinked
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => handleViewReceipt(receipt)}
+                          className="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                          title="View"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDownloadReceipt(receipt)}
+                          className="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                          title="Download"
+                        >
+                          <Download className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteReceipt(receipt._id)}
+                          className="p-1.5 text-on-surface-variant hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
-                    </div>
-                  )}
-
-                  {/* ✅ FIX: Overlay Actions with z-index */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 flex items-center justify-center z-10">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2">
-                      <button
-                        onClick={() => handleViewReceipt(receipt)}
-                        className="p-3 bg-white text-gray-900 rounded-xl hover:bg-gray-100 transition-colors shadow-lg"
-                        title="View"
-                      >
-                        <Eye className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleDownloadReceipt(receipt)}
-                        className="p-3 bg-white text-gray-900 rounded-xl hover:bg-gray-100 transition-colors shadow-lg"
-                        title="Download"
-                      >
-                        <Download className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteReceipt(receipt._id)}
-                        className="p-3 bg-white text-red-600 rounded-xl hover:bg-red-50 transition-colors shadow-lg"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Receipt Info */}
-                <div className="p-4">
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm truncate mb-2">
-                    {receipt.filename}
-                  </h4>
-
-                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-3">
-                    <span className="flex items-center">
-                      <Calendar className="w-3.5 h-3.5 mr-1" />
-                      {format(new Date(receipt.createdAt || receipt.uploadDate), 'MMM dd, yyyy')}
-                    </span>
-                    {receipt.amount && (
-                      <span className="font-semibold text-gray-900 dark:text-white">
-                        {formatCurrency(receipt.amount)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    {receipt.category && (
-                      <Badge variant="secondary" size="sm">
-                        {receipt.category}
-                      </Badge>
-                    )}
-
-                    {receipt.linkedTransaction && (
-                      <div className="flex items-center text-xs text-green-600 dark:text-green-400 font-medium">
-                        <LinkIcon className="w-3 h-3 mr-1" />
-                        Linked
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-6 mt-4 border-t border-outline-variant/30">
+              <div className="text-sm text-on-surface-variant">
+                Showing <span className="font-semibold text-on-surface">{startIndex + 1}</span> to{' '}
+                <span className="font-semibold text-on-surface">{Math.min(endIndex, totalItems)}</span> of{' '}
+                <span className="font-semibold text-on-surface">{totalItems}</span> receipts
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 1}
+                  className="flex items-center px-3 py-2 text-sm font-semibold text-on-surface bg-surface-container backdrop-blur-md border border-outline-variant/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                >
+                  <ChevronLeft className="w-4 h-4 mr-1" />
+                  Previous
+                </button>
+
+                <div className="flex items-center space-x-1">
+                  {[...Array(totalPages)].map((_, index) => {
+                    const page = index + 1
+                    if (page === 1 || page === totalPages || Math.abs(currentPage - page) <= 1) {
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                            currentPage === page
+                              ? 'bg-primary text-on-primary shadow-md'
+                              : 'text-on-surface bg-surface-container backdrop-blur-md border border-outline-variant/50 hover:bg-gray-50 dark:hover:bg-gray-700'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    } else if (page === currentPage - 2 || page === currentPage + 2) {
+                      return <span key={page} className="px-2 text-gray-400">...</span>
+                    }
+                    return null
+                  })}
+                </div>
+
+                <button
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center px-3 py-2 text-sm font-semibold text-on-surface bg-surface-container backdrop-blur-md border border-outline-variant/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </button>
+              </div>
+            </div>
+          )}
+          </>
         )}
       </div>
 
@@ -299,16 +362,16 @@ export default function ReceiptGallery() {
                 <img
                   src={getImageUrl(selectedReceipt.fileUrl)}
                   alt={selectedReceipt.filename}
-                  className="max-w-full max-h-96 object-contain rounded-lg"
+                  className="max-w-full max-h-96 object-contain bg-white rounded-lg p-2"
                 />
               ) : (
-                <div className="w-64 h-64 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                <div className="w-64 h-64 bg-surface-container-high rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <FileText className="w-20 h-20 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">PDF Document</p>
+                    <p className="text-on-surface-variant mb-4">PDF Document</p>
                     <button
                       onClick={() => window.open(getImageUrl(selectedReceipt.fileUrl), '_blank')}
-                      className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      className="px-4 py-2 bg-outline-variant/50 text-on-surface rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                     >
                       Open PDF
                     </button>
@@ -320,27 +383,27 @@ export default function ReceiptGallery() {
             {/* Receipt Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-on-surface mb-1">
                   Filename
                 </label>
-                <p className="text-sm text-gray-900 dark:text-white">{selectedReceipt.filename}</p>
+                <p className="text-sm text-on-surface">{selectedReceipt.filename}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-on-surface mb-1">
                   Upload Date
                 </label>
-                <p className="text-sm text-gray-900 dark:text-white">
+                <p className="text-sm text-on-surface">
                   {format(new Date(selectedReceipt.createdAt || selectedReceipt.uploadDate), 'MMM dd, yyyy HH:mm')}
                 </p>
               </div>
 
               {selectedReceipt.amount && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-semibold text-on-surface mb-1">
                     Amount
                   </label>
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">
+                  <p className="text-sm font-bold text-on-surface">
                     {formatCurrency(selectedReceipt.amount)}
                   </p>
                 </div>
@@ -348,7 +411,7 @@ export default function ReceiptGallery() {
 
               {selectedReceipt.category && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-semibold text-on-surface mb-1">
                     Category
                   </label>
                   <Badge variant="secondary">{selectedReceipt.category}</Badge>
@@ -357,10 +420,10 @@ export default function ReceiptGallery() {
 
               {selectedReceipt.merchant && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-semibold text-on-surface mb-1">
                     Merchant
                   </label>
-                  <p className="text-sm text-gray-900 dark:text-white">{selectedReceipt.merchant}</p>
+                  <p className="text-sm text-on-surface">{selectedReceipt.merchant}</p>
                 </div>
               )}
             </div>
@@ -368,20 +431,20 @@ export default function ReceiptGallery() {
             {/* Extracted Text */}
             {selectedReceipt.extractedText && (
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-on-surface mb-2">
                   Extracted Text
                 </label>
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-sm text-gray-900 dark:text-white whitespace-pre-wrap max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-sm text-on-surface whitespace-pre-wrap max-h-64 overflow-y-auto border border-outline-variant/30">
                   {selectedReceipt.extractedText}
                 </div>
               </div>
             )}
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/30">
               <button
                 onClick={() => handleDownloadReceipt(selectedReceipt)}
-                className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className="flex items-center px-4 py-2 bg-surface-container-highest text-on-surface rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download

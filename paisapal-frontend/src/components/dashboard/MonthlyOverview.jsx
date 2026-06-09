@@ -57,22 +57,22 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-4">
-          <p className="text-sm font-bold text-gray-900 dark:text-white mb-2">
+        <div className="bg-surface-container/40 backdrop-blur-md border border-outline-variant/30 rounded-3xl shadow-xl p-4">
+          <p className="text-sm font-bold text-on-surface mb-2">
             {data.month}
           </p>
           <div className="space-y-1">
             <div className="flex items-center justify-between space-x-4">
-              <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center">
-                <span className="w-3 h-3 bg-emerald-500 rounded-full mr-2"></span>
+              <span className="text-xs text-on-surface-variant flex items-center">
+                <span className="w-3 h-3 bg-secondary rounded-full mr-2"></span>
                 Income
               </span>
-              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-sm font-bold text-secondary">
                 {formatCurrency(data.income)}
               </span>
             </div>
             <div className="flex items-center justify-between space-x-4">
-              <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center">
+              <span className="text-xs text-on-surface-variant flex items-center">
                 <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
                 Expenses
               </span>
@@ -82,7 +82,7 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
             </div>
             {data.budget > 0 && (
               <div className="flex items-center justify-between space-x-4">
-                <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center">
+                <span className="text-xs text-on-surface-variant flex items-center">
                   <span className="w-3 h-3 bg-amber-500 rounded-full mr-2"></span>
                   Budget
                 </span>
@@ -91,14 +91,14 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
                 </span>
               </div>
             )}
-            <div className="pt-2 mt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-2 mt-2 border-t border-outline-variant/30">
               <div className="flex items-center justify-between space-x-4">
-                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                <span className="text-xs font-semibold text-on-surface">
                   Net
                 </span>
                 <span className={`text-sm font-bold ${
                   data.net >= 0 
-                    ? 'text-emerald-600 dark:text-emerald-400' 
+                    ? 'text-secondary' 
                     : 'text-red-600 dark:text-red-400'
                 }`}>
                   {formatCurrency(data.net)}
@@ -123,10 +123,10 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
 
   if (!transactions || transactions.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+      <div className="bg-surface-container/40 backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 transition-colors duration-300">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-emerald-600" />
+          <h3 className="text-lg font-bold text-on-surface flex items-center">
+            <Calendar className="w-5 h-5 mr-2 text-secondary" />
             Monthly Overview
           </h3>
         </div>
@@ -140,15 +140,15 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-lg">
+    <div className="bg-surface-container/40 backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 transition-all duration-300 hover:shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-emerald-600" />
+          <h3 className="text-lg font-bold text-on-surface flex items-center">
+            <Calendar className="w-5 h-5 mr-2 text-secondary" />
             Monthly Overview
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-on-surface-variant mt-1">
             Last 6 months trend
           </p>
         </div>
@@ -156,14 +156,14 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-3 mb-6">
-        <div className="p-3 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800">
+        <div className="p-3 bg-secondary/10 rounded-lg border border-emerald-200 dark:border-emerald-800">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+            <span className="text-xs font-medium text-secondary font-extrabold">
               Total Income
             </span>
-            <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <TrendingUp className="w-4 h-4 text-secondary" />
           </div>
-          <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">
+          <p className="text-lg font-bold text-secondary font-extrabold">
             {formatCurrency(totals.income)}
           </p>
         </div>
@@ -210,7 +210,7 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
       </div>
 
       {/* Chart */}
-      <div className="h-80 bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4">
+      <div className="h-80 bg-surface rounded-xl p-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid 
@@ -222,11 +222,11 @@ export default function MonthlyOverview({ transactions = [], budgets = [] }) {
             <XAxis 
               dataKey="shortMonth" 
               tick={{ fontSize: 12, fill: 'currentColor' }}
-              className="text-gray-600 dark:text-gray-400"
+              className="text-on-surface-variant"
             />
             <YAxis 
               tick={{ fontSize: 12, fill: 'currentColor' }}
-              className="text-gray-600 dark:text-gray-400"
+              className="text-on-surface-variant"
               tickFormatter={(value) => `₹${value/1000}k`}
             />
             <Tooltip content={<CustomTooltip />} />

@@ -51,25 +51,38 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
 
   const onSubmit = async (data) => {
     try {
-      const startDate = new Date()
-      let endDate = new Date()
+      const now = new Date()
+      let startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()) // Start of today
+      let endDate = new Date(startDate)
       
       switch (data.period) {
         case 'weekly':
+          // Start of current week (Sunday)
+          startDate.setDate(startDate.getDate() - startDate.getDay())
+          endDate = new Date(startDate)
           endDate.setDate(startDate.getDate() + 7)
           break
         case 'monthly':
-          endDate.setMonth(startDate.getMonth() + 1)
+          // Start of current month
+          startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0) // Last day of month
           break
         case 'quarterly':
-          endDate.setMonth(startDate.getMonth() + 3)
+          const quarter = Math.floor(now.getMonth() / 3)
+          startDate = new Date(now.getFullYear(), quarter * 3, 1)
+          endDate = new Date(now.getFullYear(), (quarter + 1) * 3, 0)
           break
         case 'yearly':
-          endDate.setFullYear(startDate.getFullYear() + 1)
+          startDate = new Date(now.getFullYear(), 0, 1)
+          endDate = new Date(now.getFullYear(), 11, 31)
           break
         default:
-          endDate.setMonth(startDate.getMonth() + 1)
+          startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
       }
+      
+      // Ensure end date is end of day
+      endDate.setHours(23, 59, 59, 999)
 
       const budgetData = {
         name: data.name?.trim(),
@@ -104,16 +117,16 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+    <div className="max-w-2xl mx-auto bg-surface-container backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 shadow-lg">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-          <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl mr-3">
+        <h2 className="text-2xl font-bold text-on-surface flex items-center">
+          <div className="p-2 bg-gradient-to-br from-primary to-secondary rounded-xl mr-3">
             <Target className="w-6 h-6 text-white" />
           </div>
           {isEditing ? 'Edit Budget' : 'Create New Budget'}
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-14">
+        <p className="text-sm text-on-surface-variant mt-1 ml-14">
           Set spending limits and track your financial goals
         </p>
       </div>
@@ -121,7 +134,7 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Budget Name */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Budget Name
           </label>
           <div className="relative">
@@ -130,8 +143,8 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
               type="text"
               placeholder="e.g., Monthly Groceries, Weekly Entertainment"
               className={`w-full pl-10 pr-4 py-3 border ${
-                errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200`}
+                errors.name ? 'border-red-500' : 'border-outline-variant/50'
+              } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200`}
               {...register('name', { required: 'Budget name is required' })}
             />
           </div>
@@ -143,7 +156,7 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
         {/* Category and Period */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Category
             </label>
             <Controller
@@ -154,8 +167,8 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
                 <select
                   {...field}
                   className={`w-full px-4 py-3 border ${
-                    errors.category ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200`}
+                    errors.category ? 'border-red-500' : 'border-outline-variant/50'
+                  } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200`}
                 >
                   <option value="">Select category</option>
                   {BUDGET_CATEGORIES.map((cat) => (
@@ -172,7 +185,7 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Period
             </label>
             <div className="relative">
@@ -185,8 +198,8 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
                   <select
                     {...field}
                     className={`w-full pl-10 pr-4 py-3 border ${
-                      errors.period ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                    } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200 appearance-none`}
+                      errors.period ? 'border-red-500' : 'border-outline-variant/50'
+                    } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200 appearance-none`}
                   >
                     <option value="">Select period</option>
                     {BUDGET_PERIODS.map((period) => (
@@ -207,7 +220,7 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
         {/* Budget Amount and Alert Threshold */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Budget Amount
             </label>
             <div className="relative">
@@ -218,8 +231,8 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
                 min="0"
                 placeholder="0.00"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.amount ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200`}
+                  errors.amount ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200`}
                 {...register('amount', {
                   required: 'Budget amount is required',
                   min: { value: 0.01, message: 'Amount must be greater than 0' }
@@ -232,7 +245,7 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-semibold text-on-surface mb-2">
               Alert Threshold (%)
             </label>
             <div className="relative">
@@ -243,8 +256,8 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
                 max="100"
                 placeholder="80"
                 className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.alertThreshold ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200`}
+                  errors.alertThreshold ? 'border-red-500' : 'border-outline-variant/50'
+                } rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200`}
                 {...register('alertThreshold', {
                   required: 'Alert threshold is required',
                   min: { value: 1, message: 'Threshold must be at least 1%' },
@@ -255,7 +268,7 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
             {errors.alertThreshold && (
               <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.alertThreshold.message}</p>
             )}
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-on-surface-variant mt-1">
               Get notified when spending reaches this percentage
             </p>
           </div>
@@ -263,23 +276,23 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-semibold text-on-surface mb-2">
             Description (Optional)
           </label>
           <textarea
             rows={3}
             placeholder="Add notes about this budget..."
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-all duration-200 resize-none"
+            className="w-full px-4 py-3 border border-outline-variant/50 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white transition-all duration-200 resize-none"
             {...register('description')}
           />
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-outline-variant/30">
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="flex-1 flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-xl hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             {!isLoading && <Save className="w-5 h-5 mr-2" />}
             {isLoading 
@@ -292,7 +305,7 @@ export default function BudgetForm({ onSuccess, onCancel, initialData = null }) 
             <button
               type="button"
               onClick={onCancel}
-              className="sm:w-auto px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center"
+              className="sm:w-auto px-6 py-3 bg-surface-container-highest text-on-surface font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center"
             >
               <X className="w-5 h-5 mr-2" />
               Cancel

@@ -143,19 +143,19 @@ export default function EmailVerification() {
   if (user?.googleId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-800 px-4">
-        <div className="text-center bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 max-w-md">
-          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+        <div className="text-center bg-surface-container backdrop-blur-md rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 max-w-md">
+          <div className="w-16 h-16 bg-secondary/20 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="w-8 h-8 text-secondary" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+          <h2 className="text-2xl font-bold text-on-surface mb-3">
             Account Verified!
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-on-surface-variant mb-6">
             Your Google account is already verified. Redirecting to dashboard...
           </p>
           <Link 
             to="/dashboard" 
-            className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
+            className="inline-flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-semibold rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
           >
             Go to Dashboard
             <ArrowRight className="w-5 h-5 ml-2" />
@@ -172,22 +172,22 @@ export default function EmailVerification() {
         <div className="text-center">
           <Link to="/" className="inline-block mb-6">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <ShieldCheck className="h-8 w-8 sm:h-10 sm:w-10 text-emerald-600 dark:text-emerald-400" />
+              <ShieldCheck className="h-8 w-8 sm:h-10 sm:w-10 text-secondary" />
             </div>
           </Link>
           <h2 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-3">
             Verify Your Email
           </h2>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 px-4">
+          <p className="text-base sm:text-lg text-on-surface-variant px-4">
             We've sent a 6-digit verification code to
           </p>
-          <p className="text-base sm:text-lg font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
+          <p className="text-base sm:text-lg font-semibold text-secondary mt-1">
             {email || 'your email'}
           </p>
         </div>
 
         {/* Verification Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 sm:p-8 lg:p-10">
+        <div className="bg-surface-container backdrop-blur-md rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 sm:p-8 lg:p-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {/* Email Display/Input (only if email not provided) */}
             {!location.state?.email && (
@@ -203,7 +203,7 @@ export default function EmailVerification() {
                     type="email"
                     value={email}
                     onChange={handleEmailChange}
-                    className="w-full pl-11 pr-4 py-3 sm:py-3.5 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+                    className="w-full pl-11 pr-4 py-3 sm:py-3.5 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-on-surface placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -227,13 +227,13 @@ export default function EmailVerification() {
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     onPaste={handlePaste}
-                    className={`w-12 h-12 sm:w-14 sm:h-14 text-center text-xl sm:text-2xl font-bold bg-gray-50 dark:bg-gray-700 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+                    className={`w-12 h-12 sm:w-14 sm:h-14 text-center text-xl sm:text-2xl font-bold bg-gray-50 dark:bg-gray-700 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent ${
                       errors.code
                         ? 'border-red-300 dark:border-red-500'
                         : digit
                         ? 'border-emerald-300 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
                         : 'border-gray-200 dark:border-gray-600'
-                    } text-gray-900 dark:text-white`}
+                    } text-on-surface`}
                     autoComplete="off"
                   />
                 ))}
@@ -250,7 +250,7 @@ export default function EmailVerification() {
             <button
               type="submit"
               disabled={isVerifying || !email || otp.join('').length < 6}
-              className="w-full flex items-center justify-center px-6 py-3.5 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-800 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="w-full flex items-center justify-center px-6 py-3.5 sm:py-4 bg-primary text-on-primary font-bold rounded-xl hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-800 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               {isVerifying ? (
                 <>
@@ -268,17 +268,17 @@ export default function EmailVerification() {
 
           {/* Resend Code */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-on-surface-variant">
               Didn't receive the code?{' '}
               {resendCooldown > 0 ? (
-                <span className="font-medium text-gray-500 dark:text-gray-400">
+                <span className="font-medium text-on-surface-variant">
                   Resend in {resendCooldown}s
                 </span>
               ) : (
                 <button
                   onClick={handleResend}
                   disabled={isResending || !email}
-                  className="font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center"
+                  className="font-semibold text-secondary hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center"
                 >
                   {isResending ? (
                     <>

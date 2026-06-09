@@ -53,7 +53,7 @@ function TransactionCard({ transaction, onEdit, onDelete }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-md transition-all duration-200">
+    <div className="bg-surface-container backdrop-blur-md border border-outline-variant/30 rounded-xl p-4 hover:shadow-md transition-all duration-200">
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-3 flex-1">
           <div className="flex-shrink-0 mt-1 p-2 rounded-lg bg-gray-50 dark:bg-gray-700">
@@ -62,7 +62,7 @@ function TransactionCard({ transaction, onEdit, onDelete }) {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between mb-1">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+              <h3 className="text-sm font-semibold text-on-surface truncate">
                 {transaction.description || transaction.category}
               </h3>
               <div className="flex items-center space-x-2 ml-2">
@@ -84,10 +84,10 @@ function TransactionCard({ transaction, onEdit, onDelete }) {
                         className="fixed inset-0 z-10" 
                         onClick={() => setShowMenu(false)}
                       />
-                      <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-20 border border-gray-200 dark:border-gray-700 py-1">
+                      <div className="absolute right-0 mt-1 w-48 bg-surface-container backdrop-blur-md rounded-3xl shadow-xl z-20 border border-outline-variant/30 py-1">
                         <button
                           onClick={() => { onEdit(transaction); setShowMenu(false) }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          className="flex items-center w-full px-4 py-2 text-sm text-on-surface hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                         >
                           <Edit2 className="w-4 h-4 mr-2" />
                           Edit
@@ -106,7 +106,7 @@ function TransactionCard({ transaction, onEdit, onDelete }) {
               </div>
             </div>
 
-            <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400 mb-2">
+            <div className="flex items-center space-x-4 text-xs text-on-surface-variant mb-2">
               <div className="flex items-center space-x-1">
                 <Tag className="w-3 h-3" />
                 <span>{transaction.category}</span>
@@ -213,18 +213,18 @@ export default function TransactionList({ transactions, onEdit, itemsPerPage = 1
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Showing <span className="font-semibold text-gray-900 dark:text-white">{startIndex + 1}</span> to{' '}
-            <span className="font-semibold text-gray-900 dark:text-white">{Math.min(endIndex, totalItems)}</span> of{' '}
-            <span className="font-semibold text-gray-900 dark:text-white">{totalItems}</span> transactions
+        <div className="flex items-center justify-between pt-4 border-t border-outline-variant/30">
+          <div className="text-sm text-on-surface-variant">
+            Showing <span className="font-semibold text-on-surface">{startIndex + 1}</span> to{' '}
+            <span className="font-semibold text-on-surface">{Math.min(endIndex, totalItems)}</span> of{' '}
+            <span className="font-semibold text-on-surface">{totalItems}</span> transactions
           </div>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={goToPreviousPage}
               disabled={currentPage === 1}
-              className="flex items-center px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="flex items-center px-3 py-2 text-sm font-semibold text-on-surface bg-surface-container backdrop-blur-md border border-outline-variant/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               <ChevronLeft className="w-4 h-4 mr-1" />
               Previous
@@ -245,8 +245,8 @@ export default function TransactionList({ transactions, onEdit, itemsPerPage = 1
                       onClick={() => setCurrentPage(page)}
                       className={`px-3 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
                         currentPage === page
-                          ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
-                          : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                          ? 'bg-primary text-on-primary shadow-md'
+                          : 'text-on-surface bg-surface-container backdrop-blur-md border border-outline-variant/50 hover:bg-gray-50 dark:hover:bg-gray-700'
                       }`}
                     >
                       {page}
@@ -262,7 +262,7 @@ export default function TransactionList({ transactions, onEdit, itemsPerPage = 1
             <button
               onClick={goToNextPage}
               disabled={currentPage === totalPages}
-              className="flex items-center px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="flex items-center px-3 py-2 text-sm font-semibold text-on-surface bg-surface-container backdrop-blur-md border border-outline-variant/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               Next
               <ChevronRight className="w-4 h-4 ml-1" />
@@ -274,20 +274,20 @@ export default function TransactionList({ transactions, onEdit, itemsPerPage = 1
       {/* Delete Confirmation Modal */}
       <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Transaction" size="sm">
         <div className="space-y-4">
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-on-surface-variant">
             Are you sure you want to delete this transaction? This action cannot be undone.
           </p>
           {transactionToDelete && (
             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-white dark:bg-gray-800">
+                <div className="p-2 rounded-lg bg-surface-container backdrop-blur-md">
                   <TransactionIcon type={transactionToDelete.type} className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-white">
+                  <p className="font-semibold text-on-surface">
                     {transactionToDelete.description || transactionToDelete.category}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-on-surface-variant">
                     ₹{transactionToDelete.amount.toFixed(0)}
                   </p>
                 </div>
@@ -297,7 +297,7 @@ export default function TransactionList({ transactions, onEdit, itemsPerPage = 1
           <div className="flex space-x-3">
             <button
               onClick={() => setShowDeleteModal(false)}
-              className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+              className="flex-1 px-4 py-2 bg-surface-container-highest text-on-surface font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
             >
               Cancel
             </button>

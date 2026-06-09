@@ -4,13 +4,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectSidebarOpen, setSidebarOpen } from '../../store/slices/uiSlice'
 import Navigation from './Navigation'
 import Sidebar from './Sidebar'
+import GlobalVoiceLog from '../ai/GlobalVoiceLog'
 
 export default function Layout() {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const dispatch = useDispatch()
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-gray-50 via-gray-50 to-emerald-50/30 dark:from-gray-950 dark:via-slate-950 dark:to-gray-950 transition-colors duration-300">
+    <div className="min-h-screen flex bg-background text-on-surface transition-colors duration-300">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden animate-in fade-in duration-200">
@@ -45,12 +46,13 @@ export default function Layout() {
         {/* Optional Footer */}
         <footer className="border-t border-gray-200/50 dark:border-gray-800/50 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <p className="text-center text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
-              © 2025 PaisaPal. Made with <span className="text-emerald-600 dark:text-emerald-400">💚</span> for better financial management.
+            <p className="text-center text-sm text-on-surface-variant transition-colors duration-300">
+              © 2025 PaisaPal. Made with <span className="text-secondary">💚</span> for better financial management.
             </p>
           </div>
         </footer>
       </div>
+      <GlobalVoiceLog />
     </div>
   )
 }

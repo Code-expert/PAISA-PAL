@@ -31,14 +31,10 @@ export const aiApi = createApi({
       providesTags: ['AITips'],
     }),
 
-    // ✅ CORRECT: POST method (as backend expects)
-    getPredictions: builder.mutation({
-      query: (params) => ({
-        url: '/predictions',
-        method: 'POST',
-        body: params,
-      }),
-      invalidatesTags: ['AIPredictions'],
+    // ✅ CORRECT: GET method
+    getPredictions: builder.query({
+      query: () => '/predictions',
+      providesTags: ['AIPredictions'],
     }),
 
     // ✅ CORRECT: Chat endpoint
@@ -57,13 +53,20 @@ export const aiApi = createApi({
       providesTags: ['AIInsight'],
     }),
 
+    // Monthly Report
+    getMonthlyReport: builder.query({
+      query: () => '/report',
+      providesTags: ['AIInsight'], // Just reuse AIInsight tag for caching
+    }),
+
   }),
 })
 
 export const {
   useGetAIInsightsQuery,
   useGetPersonalizedTipsQuery,
-  useGetPredictionsMutation,
+  useGetPredictionsQuery,
   useChatWithAIMutation,
   useGetLatestInsightQuery,
+  useGetMonthlyReportQuery,
 } = aiApi

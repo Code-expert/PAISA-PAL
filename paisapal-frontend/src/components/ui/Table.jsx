@@ -10,7 +10,7 @@ const Table = ({ children, className = '' }) => (
 )
 
 const TableHeader = ({ children, className = '' }) => (
-  <thead className={clsx('bg-gray-50 dark:bg-gray-800', className)}>
+  <thead className={clsx('bg-surface-container', className)}>
     {children}
   </thead>
 )
@@ -34,7 +34,7 @@ const TableHead = ({ children, className = '' }) => (
   <th
     scope="col"
     className={clsx(
-      'px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider',
+      'px-6 py-3 text-left text-xs font-medium text-on-surface-variant uppercase tracking-wider',
       className
     )}
   >
@@ -43,7 +43,7 @@ const TableHead = ({ children, className = '' }) => (
 )
 
 const TableCell = ({ children, className = '' }) => (
-  <td className={clsx('px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white', className)}>
+  <td className={clsx('px-6 py-4 whitespace-nowrap text-sm text-on-surface', className)}>
     {children}
   </td>
 )

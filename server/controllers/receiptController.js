@@ -2,7 +2,7 @@ import Receipt from '../models/Receipt.js'
 import Transaction from '../models/Transaction.js'
 import Budget from '../models/Budget.js'
 import catchAsync from '../Middleware/catchAsync.js'
-import { extractTextFromImage, parseReceiptData } from '../services/tesseractOCR.js'
+import { processReceiptImage } from '../services/visionService.js'
 import { cloudinary } from '../config/cloudinary.js'
 import axios from 'axios'
 import fs from 'fs'
@@ -103,13 +103,10 @@ export const processReceiptOCR = async (receiptId, userId) => {
       writer.on('error', reject)
     })
 
-    console.log('📝 Extracting text from:', tempFilePath)
-    const extractedText = await extractTextFromImage(tempFilePath)
-
-    // Parse receipt data
-    const ocrData = await parseReceiptData(extractedText)
+    console.log('📝 Running Gemini Vision on:', tempFilePath)
+    const ocrData = await processReceiptImage(tempFilePath)
     
-    console.log('📊 OCR Results:', {
+    console.log('📊 Vision Results:', {
       merchant: ocrData.merchant,
       amount: ocrData.amount,
       category: ocrData.category,

@@ -36,7 +36,7 @@ const Switch = ({
           {label && (
             <HeadlessSwitch.Label 
               as="span" 
-              className="text-sm font-medium text-gray-900 dark:text-white" 
+              className="text-sm font-medium text-on-surface" 
               passive
             >
               {label}
@@ -45,7 +45,7 @@ const Switch = ({
           {description && (
             <HeadlessSwitch.Description 
               as="span" 
-              className="text-sm text-gray-500 dark:text-gray-400"
+              className="text-sm text-on-surface-variant"
             >
               {description}
             </HeadlessSwitch.Description>
@@ -59,7 +59,7 @@ const Switch = ({
         disabled={disabled}
         className={clsx(
           'relative inline-flex flex-shrink-0 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
-          checked ? 'bg-primary-600' : 'bg-gray-200 dark:bg-gray-700',
+          checked ? 'bg-primary-600' : 'bg-outline-variant/50',
           disabled && 'opacity-50 cursor-not-allowed',
           sizes[size],
           className

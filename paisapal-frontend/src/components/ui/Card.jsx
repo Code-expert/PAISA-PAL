@@ -12,7 +12,7 @@ const Card = React.forwardRef(({
     <div
       ref={ref}
       className={clsx(
-        'bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm',
+        'bg-surface-container backdrop-blur-md rounded-lg border border-outline-variant/30 shadow-sm',
         padding && 'p-6',
         hover && 'hover:shadow-md transition-shadow duration-200',
         className
@@ -31,19 +31,19 @@ const CardHeader = ({ children, className = '' }) => (
 )
 
 const CardTitle = ({ children, className = '' }) => (
-  <h3 className={clsx('text-lg font-semibold text-gray-900 dark:text-white', className)}>
+  <h3 className={clsx('text-lg font-semibold text-on-surface', className)}>
     {children}
   </h3>
 )
 
 const CardContent = ({ children, className = '' }) => (
-  <div className={clsx('text-gray-600 dark:text-gray-400', className)}>
+  <div className={clsx('text-on-surface-variant', className)}>
     {children}
   </div>
 )
 
 const CardFooter = ({ children, className = '' }) => (
-  <div className={clsx('mt-4 pt-4 border-t border-gray-200 dark:border-gray-700', className)}>
+  <div className={clsx('mt-4 pt-4 border-t border-outline-variant/30', className)}>
     {children}
   </div>
 )
